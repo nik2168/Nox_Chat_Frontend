@@ -23,7 +23,7 @@ const ProfileWindow = ({ profilewindow, curChatId, allChats }) => {
             .then(({ data }) => setCurMember(data?.profileData))
             .catch((e) => console.log(e));
 
-      }, [chatId, profilewindow.current.classList]);
+      }, [chatId]);
 
 
   return (
