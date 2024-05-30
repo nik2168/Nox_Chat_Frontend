@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 const NoxVerse = ({ curnav, allChats }) => {
 
   const {onlineMembers} = useSelector((state) => state.chat)
+  const {user} = useSelector((state) => state.auth)
 
 
 const [search, setSearch] = useState("");
@@ -101,6 +102,8 @@ const addUserWindow = useRef(); // open close window
       <article className="noxverse-users">
 
         {  users.map(({ name, _id, avatar, bio, username }) => {
+          
+          if(user._id.toString() === _id.toString()) return;
 
   let isOnline = false;
   if(onlineMembers.includes(_id.toString())) isOnline = true;
