@@ -275,7 +275,7 @@ const Chat = ({ chatid, allChats, navbarref }) => {
               </p>
             )
           )}
-          {!isTyping && !curChat?.groupChat && isOnline && <p className="chattypingspan">online</p> || !curChat?.groupChat && isOnline && <p className="chattypingspan">offline</p>}
+          {!isTyping && !curChat?.groupChat && isOnline && <p className="chattypingspan">online</p> || !curChat?.groupChat && !isOnline && <p className="chattypingspan" style={{color: "whitesmoke"}}>offline</p>}
           {/* {isOnline ? <span>Online</span> : <span>Offline</span>} */}
         </div>
 

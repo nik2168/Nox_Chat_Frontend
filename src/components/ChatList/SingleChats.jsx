@@ -40,6 +40,7 @@ const SingleChats = ({
 
         const {isLoading, isError, error, data, refetch} = useGetLastMessageTimeQuery(_id)
         const lastMessageTime = data?.lastMessage?.createdAt
+        const lastMessageContent = data?.lastMessage?.content || "...";
         let lastMsgData = "..."
                 if(lastMessageTime)  lastMsgData = moment(data?.lastMessage?.createdAt).fromNow();
         useErrors([{isError, error}])
@@ -57,7 +58,7 @@ const SingleChats = ({
               );
               const notificationCount = msgAlert?.count || 0;
               const messageAlert = msgAlert?.message || "No new message";
-              let msg = messageAlert?.content?.slice(0, 18) || [];
+              let msg = messageAlert?.content?.slice(0, 18) || lastMessageContent;
               if (msg.length === 18) msg += "...";
 
               let startTyping = false;

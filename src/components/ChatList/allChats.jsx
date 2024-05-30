@@ -95,7 +95,7 @@ const AllChats = ({
         <hr />
       </div>
 
-      {isLoading ? <Skeleton/> : ( 
+      {isLoading ? <Skeleton className="allchats-users"/> : ( 
         <article className="allchats-users">
         {curnav === "chats" &&
 

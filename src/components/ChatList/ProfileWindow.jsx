@@ -23,7 +23,7 @@ const ProfileWindow = ({ profilewindow, curChatId, allChats }) => {
             .then(({ data }) => setCurMember(data?.profileData))
             .catch((e) => console.log(e));
 
-      }, [chatId]);
+      }, [chatId, profilewindow.current.classList]);
 
 
   return (
@@ -33,13 +33,13 @@ const ProfileWindow = ({ profilewindow, curChatId, allChats }) => {
         onClick={() => {
           profilewindow.current.classList.remove("active");
           allChats.current.classList.remove("lightblur");
-          setCurMember({
-            name: "...",
-            avatar: {
-              url: "https://res.cloudinary.com/dki615p7n/image/upload/v1715486888/default_avatar_tvgr8w.jpg",
-            },
-            username: "...",
-          });
+          // setCurMember({
+          //   name: "...",
+          //   avatar: {
+          //     url: "https://res.cloudinary.com/dki615p7n/image/upload/v1715486888/default_avatar_tvgr8w.jpg",
+          //   },
+          //   username: "...",
+          // });
         }}
       >
         <Close
