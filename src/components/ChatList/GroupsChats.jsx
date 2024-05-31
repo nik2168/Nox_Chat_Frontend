@@ -63,7 +63,7 @@ const GroupChats = ({ allChats, chat, navbarref, handleDeleteChatOpen, index, pr
           to={`/chat/${_id}`}
           className="person-details"
           onClick={() => {
-            navbarref.current.style.zIndex = "0";
+            navbarref.current.style.zIndex = "1";
             allChats.current.style.zIndex = "0";
           }}
         >

@@ -5,6 +5,7 @@ import {
   Group,
   Logout,
   CameraAlt,
+  SwitchAccessShortcutAddSharp,
 } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
@@ -228,7 +229,7 @@ const Navbar = ({ setnav, curnav, navbarref }) => {
             setnav("calls");
           }}
         >
-          <Call />
+          <SwitchAccessShortcutAddSharp />
         </li>
 
         <li

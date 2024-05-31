@@ -111,7 +111,7 @@ const SingleChats = ({
                 className="person-details"
                 onClick={() => {
                   allChats.current.style.zIndex = "0";
-                  navbarref.current.style.zIndex = "0";
+                  navbarref.current.style.zIndex = "1";
                 }}
               >
                 <h5>{name}</h5>
