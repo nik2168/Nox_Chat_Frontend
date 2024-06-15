@@ -369,7 +369,7 @@ setAllMessages(updatedStatus)
 
       <ChatSettings />
 
-      {chatDetails.isLoading ? (
+      {chatDetails?.isLoading ? (
         <Skeleton />
       ) : (
         <Messages
