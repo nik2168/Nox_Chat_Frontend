@@ -409,7 +409,6 @@ setAllMessages(updatedStatus)
             className="chat-message"
             value={message}
             onChange={(e) => onChangeHandler(e)}
-            autoFocus
           />
 
           <EmojiEmotions
