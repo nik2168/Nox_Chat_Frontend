@@ -12,17 +12,20 @@ import AddMembers from "./AddMembers";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-const GroupSettings = ({ curChat, groupsetting, addMemberWindow, chatid }) => {
-
+const GroupSettings = ({
+  curChat,
+  groupsetting,
+  addMemberWindow,
+  chatid,
+  oldMessagesChunk,
+}) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
   const { onlineMembers } = useSelector((state) => state.chat);
 
   const { _id, name, avatar, creator, groupChat, members } = curChat;
-
-
 
   let isAdmin = false;
   if (user._id.toString() === creator.toString()) isAdmin = true;
@@ -76,6 +79,7 @@ const GroupSettings = ({ curChat, groupsetting, addMemberWindow, chatid }) => {
   );
 
   const updateGroupInfoHandler = async (e) => {
+                      oldMessagesChunk?.refetch();
     if (!isChange) {
       groupsetting.current.classList.remove("active");
       return;
@@ -89,15 +93,15 @@ const GroupSettings = ({ curChat, groupsetting, addMemberWindow, chatid }) => {
     groupsetting.current.classList.remove("active");
   };
 
-
   // Delete Group Handler -
-  const [deleteChatMutation, isLoadingDeleteChatMutation] = useAsyncMutation( useDeleteChatMutation );
+  const [deleteChatMutation, isLoadingDeleteChatMutation] = useAsyncMutation(
+    useDeleteChatMutation
+  );
 
   const deleteChatHandler = async (e) => {
-
-    await deleteChatMutation( "deleting group ...", chatid)
-        groupsetting.current.classList.remove("active");
-      navigate('/')
+    await deleteChatMutation("deleting group ...", chatid);
+    groupsetting.current.classList.remove("active");
+    navigate("/");
   };
 
   const handleImageChange = (e) => {
@@ -119,7 +123,10 @@ const GroupSettings = ({ curChat, groupsetting, addMemberWindow, chatid }) => {
           <button
             type="button"
             className="groupbackbtn"
-            onClick={() => groupsetting.current.classList.remove("active")}
+            onClick={() => {
+              groupsetting.current.classList.remove("active");
+              oldMessagesChunk?.refetch()
+            }}
           >
             <ArrowBack />
           </button>
@@ -277,9 +284,8 @@ const GroupSettings = ({ curChat, groupsetting, addMemberWindow, chatid }) => {
             // let isAdmin = false;
             // console.log(creator);
             // if (member?._id === creator.toString()) isAdmin = true;
-              let isOnline = false;
-              if (onlineMembers.includes(member?._id.toString())) isOnline = true;
-
+            let isOnline = false;
+            if (onlineMembers.includes(member?._id.toString())) isOnline = true;
 
             return (
               <li key={member?._id} className="groupsettingsmembers">

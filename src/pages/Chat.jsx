@@ -52,7 +52,7 @@ const ChatSetting = lazy(() =>
   import("../components/ChatComp/chatsetting.jsx")
 );
 
-const Chat = ({ chatid, allChats, navbarref, isOnline }) => {
+const Chat = ({ chatid, allChats, navbarref }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth); // Cur User
   const { onlineMembers } = useSelector((state) => state.chat); // Cur User
@@ -112,7 +112,8 @@ const Chat = ({ chatid, allChats, navbarref, isOnline }) => {
     avatar = otherMember?.avatar?.url;
     name = otherMember?.name;
   }
-
+  
+  let isOnline = false;
   let isChatOnline = false;
   if (!curChat?.groupChat) {
     isOnline = onlineMembers.includes(otherMember?._id.toString());
@@ -267,6 +268,7 @@ setAllMessages(updatedStatus)
             curChat={curChat}
             addMemberWindow={addMemberWindow}
             chatid={chatid}
+            oldMessagesChunk={oldMessagesChunk}
           />
         </Suspense>
       ) : (
@@ -288,13 +290,12 @@ setAllMessages(updatedStatus)
           onClick={() => {
             // allChats.current.style.zIndex = "4";
             // navbarref.current.style.zIndex = "5";
-            navigate('/')
-              setOldMessages([]);
-              setPage(1);
-              setMessages([]);
-              setcurmessage("");
-              if (members)
-                socket.emit(CHAT_LEAVE, { userId: user._id, members });
+            navigate("/");
+            setOldMessages([]);
+            setPage(1);
+            setMessages([]);
+            setcurmessage("");
+            if (members) socket.emit(CHAT_LEAVE, { userId: user._id, members });
           }}
         >
           <ArrowBackIosNew sx={{ width: "2rem", height: "2rem" }} />

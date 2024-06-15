@@ -51,7 +51,6 @@ const AppLayout = () => (WrapComp) => {
     const { chatid } = useParams();
     const allChats = useRef(); // ref to chat
     const navbarref = useRef(); // ref to chat
-    const isOnline = false;
     const [playsound, setPlaySound] = useState(false)
 
 
@@ -75,7 +74,7 @@ const AppLayout = () => (WrapComp) => {
       .then(({ data }) => console.log(data?.message))
       .catch((e) => console.log(e));
 
-  }, [isOnline]);
+  }, []);
 
     // my chats fetching ...
     const { isLoading, data, isError, error, refetch } =
@@ -133,7 +132,6 @@ const AppLayout = () => (WrapComp) => {
     const refetchNewMembers = useCallback(
       (data) => {
         if (data?.userId === user._id.toString()) navigate(`/`);
-        else navigate(`/chat/${data?.curChatId}`);
         refetch();
       },
       [refetch, navigate]
@@ -193,7 +191,7 @@ const AppLayout = () => (WrapComp) => {
             <NoxVerse curnav={curnav} allChats={allChats} />
           )}
 
-          <WrapComp chatid={chatid} allChats={allChats} navbarref={navbarref} isOnline={isOnline}/>
+          <WrapComp chatid={chatid} allChats={allChats} navbarref={navbarref}/>
         </main>
       </>
     );
