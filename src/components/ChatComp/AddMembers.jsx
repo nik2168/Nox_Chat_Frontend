@@ -61,7 +61,6 @@ const AddMembers = ({ addMemberWindow, chatid, members }) => {
       <article
         className="addMembers-article"
         ref={addMemberWindow}
-        style={{ height: "100%", width: "100%" }}
       >
 
 

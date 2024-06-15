@@ -5,10 +5,11 @@ import { Link } from "react-router-dom";
 import { transformImage } from "../../lib/features";
 import { Delete } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import { Skeleton } from "@mui/material";
 
 
 
-const GroupChats = ({ allChats, chat, navbarref, handleDeleteChatOpen, index, profilewindow, setCurChatId }) => {
+const GroupChats = ({ allChats, chat, navbarref, handleDeleteChatOpen, index, msg, lastMsgData, isLoading, profilewindow, setCurChatId }) => {
   const { allChatsIsTyping } = useSelector((state) => state.chat); // Cur User
 
   const { newMessageAlert } = useSelector((state) => state.chat);
@@ -21,8 +22,8 @@ const GroupChats = ({ allChats, chat, navbarref, handleDeleteChatOpen, index, pr
   );
   const notificationCount = msgAlert?.count || 0;
   const messageAlert = msgAlert?.message || "No new message";
-  let msg = messageAlert?.content?.slice(0, 18) || [];
-  if (msg.length === 18) msg += "...";
+  // let msg = messageAlert?.content?.slice(0, 28) || [];
+  // if (msg.length === 28) msg += "...";
 
   let startTyping = false;
   let whoIsTyping;
@@ -38,15 +39,18 @@ const GroupChats = ({ allChats, chat, navbarref, handleDeleteChatOpen, index, pr
   return (
     <>
       <div
-    
         // onContextMenu={(e) => handleDeleteChatOpen(e, _id, groupChat)}
         className="person-div"
       >
-        <button value={_id} className="person-dp" onClick={(e) => {
-           profilewindow.current.classList.add("active");
-           allChats.current.classList.add("lightblur");
-           setCurChatId(e.currentTarget.value);
-        }}>
+        <button
+          value={_id}
+          className="person-dp"
+          onClick={(e) => {
+            profilewindow.current.classList.add("active");
+            allChats.current.classList.add("lightblur");
+            setCurChatId(e.currentTarget.value);
+          }}
+        >
           <div className="groupbg1"> </div>
           <div className="groupbg2"></div>
           <img
@@ -63,8 +67,8 @@ const GroupChats = ({ allChats, chat, navbarref, handleDeleteChatOpen, index, pr
           to={`/chat/${_id}`}
           className="person-details"
           onClick={() => {
-            navbarref.current.style.zIndex = "1";
-            allChats.current.style.zIndex = "0";
+            // navbarref.current.style.zIndex = "1";
+            // allChats.current.style.zIndex = "0";
           }}
         >
           <h5>{name}</h5>
@@ -76,9 +80,15 @@ const GroupChats = ({ allChats, chat, navbarref, handleDeleteChatOpen, index, pr
             <span>{msg}</span>
           )}
         </Link>
-        <span className="person-time">
+        {/* <span className="person-time">
           {moment(messageAlert?.sender?.createdAt).fromNow()}
-        </span>
+        </span> */}
+
+        {isLoading ? (
+          <Skeleton />
+        ) : (
+          <span className="person-time">{lastMsgData}</span>
+        )}
         {notificationCount !== 0 && (
           <span className="person-notification-count">{notificationCount}</span>
         )}

@@ -34,16 +34,35 @@ const Login = () => {
   const signUpSubmitHandler = async (e) => {
     e.preventDefault();
 
+
+    if (!nameFlag) {
+      setcheck(nameErr);
+      return;
+    }
+    else if (!userFlag) {
+      setcheck(userErr);
+      return;
+    }
+    else if (!bioFlag) {
+      setcheck(bioErr);
+      return;
+    }
+    else if (!passFlag) {
+      setcheck(passErr);
+      return;
+    }
+
+    else if (!file) {
+      setcheck("avatar ???");
+      return;
+    }
+    
+    else setcheck("");
+
+
     const toastId = toast.loading("Signing Up...");
 
     setIsLoading(true)
-
-    if (!nameFlag) setcheck(nameErr);
-    else if (!userFlag) setcheck(userErr);
-    else if (!bioFlag) setcheck(bioErr);
-    else if (!passFlag) setcheck(passErr);
-    else if (!file) setcheck("avatar ???");
-    else setcheck("");
 
     const formdata = new FormData();
 

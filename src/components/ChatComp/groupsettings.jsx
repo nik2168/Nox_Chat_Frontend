@@ -61,7 +61,6 @@ const GroupSettings = ({ curChat, groupsetting, addMemberWindow, chatid }) => {
   const exitGroupHandler = async (e) => {
     try {
       const res = await useExitGroupQuery(chatid);
-      console.log(res?.data);
       if (res?.data?.success) toast.success(res?.data?.message);
       else toast.error(res?.error?.message);
     } catch (err) {
@@ -281,7 +280,6 @@ const GroupSettings = ({ curChat, groupsetting, addMemberWindow, chatid }) => {
               let isOnline = false;
               if (onlineMembers.includes(member?._id.toString())) isOnline = true;
 
-              console.log(member?.name, isOnline)
 
             return (
               <li key={member?._id} className="groupsettingsmembers">

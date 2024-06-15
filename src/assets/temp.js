@@ -1,3 +1,20 @@
-let a = [1,2,3,4]
-if(!a.includes(3)) console.log("true")
-    else console.log("false")
+let a = [{
+    name: "seen",
+    class: "12th"
+},
+{
+    name: "online",
+    class: "10th"
+}
+]
+
+console.log(a)
+
+const result = a.map((i) => {
+    if(i.name === "online"){
+        i["name"] = "seen"
+    }
+    return i
+})
+
+console.log(result)

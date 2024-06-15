@@ -4,7 +4,8 @@ import { useSelector } from "react-redux";
 import { fileFormat } from "../../lib/features";
 import RenderAttachment from "./RenderAttachment";
 import { Box } from "@mui/material";
-import {motion} from "framer-motion"
+import { motion } from "framer-motion";
+import { Done, DoneAll } from "@mui/icons-material";
 
 const Messages = ({
   chat,
@@ -14,10 +15,13 @@ const Messages = ({
   chatid,
   messages,
   groupChat,
+  members,
+  otherMember,
 }) => {
   const { newGroupAlert } = useSelector((state) => state.chat);
 
   const autoScrollDiv = useRef();
+
 
   useEffect(() => {
     if (autoScrollDiv.current)
@@ -35,10 +39,15 @@ const Messages = ({
     >
       {newGroupAlert?.isNewAlert && <p>{newGroupAlert.message}</p>}
 
-      {allMessages?.map((i, index) => {
-        const { _id, content, isAlert, attachments, sender, createdAt } = i;
-  const timeAgo = moment(createdAt).fromNow();
-        const samesender = user?._id.toString() === sender?._id.toString() ;
+      {allMessages?.map((i) => {
+        const { _id, content, isAlert, attachments, status, sender, createdAt } = i;
+
+        const timeAgo = moment(createdAt).fromNow();
+        const samesender = user?._id.toString() === sender?._id.toString();
+
+        // const isOnline = !samesender && onlineMembers.includes(sender._id.toString());
+        // const isInChatOnline = !samesender && onlineChatMembers.includes(sender._id.toString());
+        // console.log(isOnline, isInChatOnline);
 
         {
           return !samesender ? (
@@ -51,7 +60,7 @@ const Messages = ({
             ) : (
               <>
                 {content && (
-                  <li key={index} className="textsinboxOuterDiv">
+                  <li key={_id} className="textsinboxOuterDiv">
                     <div className="textsinboxdiv">
                       {groupChat && <p className="textsender">{sender.name}</p>}
 
@@ -67,12 +76,12 @@ const Messages = ({
                     const file = fileFormat(url);
 
                     return (
-                      <li key={idx} className="inboxAttachmentsOuterdiv">
+                      <li key={_id} className="inboxAttachmentsOuterdiv">
                         <div className="inboxAttachments">
                           {groupChat && (
                             <p className="textsender">{sender.name}</p>
                           )}
-                          <Box >
+                          <Box>
                             <a href={url} target="_blank" download>
                               {RenderAttachment(file, url)}
                             </a>
@@ -88,7 +97,7 @@ const Messages = ({
               </>
             )
           ) : isAlert ? (
-            <div key={index} className="chatmessagesalert">
+            <div key={_id} className="chatmessagesalert">
               <div className="messagealertinnerdiv">
                 <p>{content}</p>
               </div>
@@ -99,7 +108,36 @@ const Messages = ({
                 <li key={_id} className="textssentOuterDiv">
                   <div className="textssentdiv">
                     <p className="textssentp">{content}</p>
-                    <p className="textssenttimeStamps">{timeAgo}</p>
+                    <div className="inboxtimetickdiv">
+                      <p className="textssenttimeStamps">{timeAgo}</p>
+                      {(status === "send" && (
+                        <Done
+                          sx={{
+                            height: "1rem",
+                            width: "1rem",
+                            color: "whitesmoke",
+                          }}
+                        />
+                      )) ||
+                        (status === "online" && (
+                          <DoneAll
+                            sx={{
+                              height: "1rem",
+                              width: "1rem",
+                              color: "whitesmoke",
+                            }}
+                          />
+                        )) ||
+                        (status === "seen" && (
+                          <DoneAll
+                            sx={{
+                              height: "1rem",
+                              width: "1rem",
+                              color: "yellow",
+                            }}
+                          />
+                        ))}
+                    </div>
                   </div>
                 </li>
               )}
@@ -109,7 +147,7 @@ const Messages = ({
                   const file = fileFormat(url);
 
                   return (
-                    <li key={idx} className="sentAttachmentsOuterdiv">
+                    <li key={_id} className="sentAttachmentsOuterdiv">
                       <div className="sentAttachments">
                         <Box>
                           <a href={url} target="_blank" download>

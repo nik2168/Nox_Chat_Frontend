@@ -196,11 +196,24 @@ const api = createApi({
         url: `/chat/getlastmessagetime/${chatid}`,
         credentials: "include",
       }),
-invalidatesTags: ["LastMessage"]
+      invalidatesTags: ["LastMessage"],
     }),
-    
-   
 
+    changeMessageToOnline: builder.query({
+      query: (ˀ) => ({
+        url: `/chat/changemessagetoonline`,
+        credentials: "include",
+      }),
+      invalidatesTags: [],
+    }),
+
+    changeMessageToSeen: builder.query({
+      query: (chatid) => ({
+        url: `/chat/changemessagetoseen/${chatid}`,
+        credentials: "include",
+      }),
+      invalidatesTags: [],
+    }),
   }),
 });
 
@@ -227,4 +240,6 @@ export const {
   useDeleteChatMutation,
   useLazyGetChatProfileDataQuery,
   useGetLastMessageTimeQuery,
+  useLazyChangeMessageToOnlineQuery,
+  useLazyChangeMessageToSeenQuery,
 } = api;

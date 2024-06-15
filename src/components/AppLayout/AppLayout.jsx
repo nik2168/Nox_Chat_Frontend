@@ -16,6 +16,7 @@ import Title from "../shared/Title";
 import Navbar from "./Navbar";
 
 import {
+  CHAT_ONLINE_USERS,
   MEMBER_REMOVED,
   NEW_MESSAGE_ALERT,
   NEW_REQUEST,
@@ -31,13 +32,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   incrementNotification,
   setAllChatsTyping,
+  setChatOnlineMembers,
   setNewMessagesAlert,
   setOnlineMembers,
   setTyping,
 } from "../../redux/reducer/chat.js";
 import { useNavigate, useParams } from "react-router-dom";
 import NoxVerse from "../Nox Verse/NoxVerse.jsx";
-import { useMyChatsQuery } from "../../redux/api/api.js";
+import { useLazyChangeMessageToOnlineQuery, useMyChatsQuery } from "../../redux/api/api.js";
+
 
 const AppLayout = () => (WrapComp) => {
   return (props) => {
@@ -48,6 +51,7 @@ const AppLayout = () => (WrapComp) => {
     const { chatid } = useParams();
     const allChats = useRef(); // ref to chat
     const navbarref = useRef(); // ref to chat
+    const isOnline = false;
     const [playsound, setPlaySound] = useState(false)
 
 
@@ -59,6 +63,19 @@ const AppLayout = () => (WrapComp) => {
     const socket = getSocket();
 
     const [search, setSearch] = useState("");
+
+
+// marked all messages to online
+    const [updateMessageSendToOnline] = useLazyChangeMessageToOnlineQuery();
+
+  useEffect(() => {
+    // marked all send messages to online if user is online
+
+    updateMessageSendToOnline()
+      .then(({ data }) => console.log(data?.message))
+      .catch((e) => console.log(e));
+
+  }, [isOnline]);
 
     // my chats fetching ...
     const { isLoading, data, isError, error, refetch } =
@@ -129,6 +146,13 @@ const AppLayout = () => (WrapComp) => {
       [dispatch]
     );
 
+    const chatOnlineUsersListener = useCallback(
+      (data) => {
+        dispatch(setChatOnlineMembers(data))
+      },
+      [dispatch]
+    );
+
     const eventHandler = {
       [NEW_MESSAGE_ALERT]: newMessagesAlert,
       [NEW_REQUEST]: newRequestAlert,
@@ -136,7 +160,8 @@ const AppLayout = () => (WrapComp) => {
       [STOP_TYPING]: stopTypingListner,
       [REFETCH_CHATS]: refetchListner,
       [MEMBER_REMOVED]: refetchNewMembers,
-      [ONLINE_USERS] : onlineUsersListener,
+      [ONLINE_USERS]: onlineUsersListener,
+      [CHAT_ONLINE_USERS]: chatOnlineUsersListener,
     };
 
     useSocketEvents(socket, eventHandler);
@@ -168,7 +193,7 @@ const AppLayout = () => (WrapComp) => {
             <NoxVerse curnav={curnav} allChats={allChats} />
           )}
 
-          <WrapComp chatid={chatid} allChats={allChats} navbarref={navbarref} />
+          <WrapComp chatid={chatid} allChats={allChats} navbarref={navbarref} isOnline={isOnline}/>
         </main>
       </>
     );

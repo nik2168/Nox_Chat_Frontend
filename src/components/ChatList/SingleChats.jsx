@@ -58,8 +58,10 @@ const SingleChats = ({
               );
               const notificationCount = msgAlert?.count || 0;
               const messageAlert = msgAlert?.message || "No new message";
-              let msg = messageAlert?.content?.slice(0, 18) || lastMessageContent;
-              if (msg.length === 18) msg += "...";
+              let msg =
+                messageAlert?.content?.slice(0, 28) ||
+                lastMessageContent.slice(0, 28);
+              if (msg.length >= 28) msg += "...";
 
               let startTyping = false;
               if (_id.toString() === allChatsIsTyping.typingChatid.toString())
@@ -78,6 +80,9 @@ const SingleChats = ({
               handleDeleteChatOpen={handleDeleteChatOpen}
               profilewindow={profilewindow}
               setCurChatId={setCurChatId}
+              lastMsgData={lastMsgData}
+              isLoading={isLoading}
+              msg={msg}
             />
           ) : (
             <div
@@ -110,8 +115,8 @@ const SingleChats = ({
                 to={`/chat/${_id}`}
                 className="person-details"
                 onClick={() => {
-                  allChats.current.style.zIndex = "0";
-                  navbarref.current.style.zIndex = "1";
+                  // allChats.current.style.zIndex = "0";
+                  // navbarref.current.style.zIndex = "1";
                 }}
               >
                 <h5>{name}</h5>

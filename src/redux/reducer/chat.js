@@ -5,6 +5,7 @@ import { FileOpen } from "@mui/icons-material";
 
 const initialState = {
   onlineMembers: [],
+  onlineChatMembers: [],
   notificationCount: 0,
   newMessageAlert: getOrSaveFromStorage({
     key: NEW_MESSAGE_ALERT,
@@ -78,6 +79,10 @@ const chatSlice = createSlice({
     setOnlineMembers: (state, action) => {
       state.onlineMembers = action.payload;
     },
+
+    setChatOnlineMembers: (state, action) => {
+      state.onlineChatMembers = action.payload;
+    }
   },
 });
 
@@ -91,6 +96,7 @@ export const {
   setNewGroupAlert,
   removeNewGroupAlert,
   setOnlineMembers,
+  setChatOnlineMembers,
 } = chatSlice.actions;
 
 export default chatSlice;
