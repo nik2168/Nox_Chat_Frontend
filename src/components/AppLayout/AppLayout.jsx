@@ -142,7 +142,6 @@ const AppLayout = () => (WrapComp) => {
           chatOnlineMembers,
           chatId,
         };
-        console.log("data : ", data)
         dispatch(setChatOnlineMembers(data))
       },
       []
