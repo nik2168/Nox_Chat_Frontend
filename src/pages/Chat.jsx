@@ -117,7 +117,9 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   let isChatOnline = false;
   if (!curChat?.groupChat) {
     isOnline = onlineMembers.includes(otherMember?._id.toString());
-    isChatOnline = onlineChatMembers.includes(otherMember?._id.toString());
+    if(onlineChatMembers?.chatId?.toString() === chatid?.toString()){
+    isChatOnline = onlineChatMembers?.chatOnlineMembers.includes(otherMember?._id.toString());
+    }
   }
 
   // useEffect(() => {
@@ -147,7 +149,8 @@ const [updateMessageOnlineToSeen] = useLazyChangeMessageToSeenQuery()
   );
 
   useEffect(() => {
-    if (members) socket.emit(CHAT_JOINED, { userId: user._id, members });
+    if (members) socket.emit(CHAT_JOINED, { userId: user._id, members, chatid });
+    // console.log("chat joined", onlineMembers, onlineChatMembers)
 
     dispatch(removeNewMessagesAlert(chatid));
 
@@ -156,7 +159,8 @@ const [updateMessageOnlineToSeen] = useLazyChangeMessageToSeenQuery()
       setPage(1);
       setMessages([]);
       setcurmessage("");
-      if (members) socket.emit(CHAT_LEAVE, { userId: user._id, members });
+      if (members) socket.emit(CHAT_LEAVE, { userId: user._id, members, chatid });
+      // console.log("chat leave", members )
     };
   }, [chatid, members]);
 
@@ -178,9 +182,10 @@ const [updateMessageOnlineToSeen] = useLazyChangeMessageToSeenQuery()
 
     // emitting message to the server ...
     socket.emit(NEW_MESSAGE, { chatid, members, message, isOnline, isChatOnline });
-
+  // console.log("emitting new message", message, isOnline, isChatOnline)
     setcurmessage("");
   };
+
 
   const onChangeHandler = (e) => {
     setcurmessage(e.target.value);
@@ -240,7 +245,7 @@ setAllMessages(updatedStatus)
 
   const alertListener = useCallback(
     (data) => {
-      console.log(chatid, data);
+      // console.log(chatid, data);
       if (data?.chatid?.toString() !== chatid?.toString()) return;
       setNewGroupAlert(dispatch(data));
     },

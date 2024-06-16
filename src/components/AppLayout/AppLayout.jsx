@@ -39,8 +39,10 @@ import {
 } from "../../redux/reducer/chat.js";
 import { useNavigate, useParams } from "react-router-dom";
 import NoxVerse from "../Nox Verse/NoxVerse.jsx";
-import { useLazyChangeMessageToOnlineQuery, useMyChatsQuery } from "../../redux/api/api.js";
-
+import {
+  useLazyChangeMessageToOnlineQuery,
+  useMyChatsQuery,
+} from "../../redux/api/api.js";
 
 const AppLayout = () => (WrapComp) => {
   return (props) => {
@@ -51,10 +53,7 @@ const AppLayout = () => (WrapComp) => {
     const { chatid } = useParams();
     const allChats = useRef(); // ref to chat
     const navbarref = useRef(); // ref to chat
-    const [playsound, setPlaySound] = useState(false)
-
-
-  
+    const [playsound, setPlaySound] = useState(false);
 
     const [curnav, setnav] = useState("chats");
     const dispatch = useDispatch();
@@ -63,24 +62,21 @@ const AppLayout = () => (WrapComp) => {
 
     const [search, setSearch] = useState("");
 
-
-// marked all messages to online
+    // marked all messages to online
     const [updateMessageSendToOnline] = useLazyChangeMessageToOnlineQuery();
 
-  useEffect(() => {
-    // marked all send messages to online if user is online
+    useEffect(() => {
+      // marked all send messages to online if user is online
 
-    updateMessageSendToOnline()
-      .then(({ data }) => console.log(data?.message))
-      .catch((e) => console.log(e));
-
-  }, []);
+      updateMessageSendToOnline()
+        .then(({ data }) => console.log(data?.message))
+        .catch((e) => console.log(e));
+    }, []);
 
     // my chats fetching ...
     const { isLoading, data, isError, error, refetch } =
       useMyChatsQuery(search);
     useErrors([{ isError, error }]);
-    
 
     const newMessagesAlert = useCallback(
       (data) => {
@@ -91,7 +87,6 @@ const AppLayout = () => (WrapComp) => {
     );
 
     const newRequestAlert = useCallback(() => {
-    
       dispatch(incrementNotification());
     }, [dispatch]);
 
@@ -137,18 +132,20 @@ const AppLayout = () => (WrapComp) => {
       [refetch, navigate]
     );
 
-    const onlineUsersListener = useCallback(
-      (data) => {
-        dispatch(setOnlineMembers(data))
-      },
-      [dispatch]
-    );
+    const onlineUsersListener = useCallback((data) => {
+      dispatch(setOnlineMembers(data));
+    }, []);
 
     const chatOnlineUsersListener = useCallback(
-      (data) => {
+      ({ chatOnlineMembers, chatId }) => {
+        const data = {
+          chatOnlineMembers,
+          chatId,
+        };
+        console.log("data : ", data)
         dispatch(setChatOnlineMembers(data))
       },
-      [dispatch]
+      []
     );
 
     const eventHandler = {
@@ -191,7 +188,7 @@ const AppLayout = () => (WrapComp) => {
             <NoxVerse curnav={curnav} allChats={allChats} />
           )}
 
-          <WrapComp chatid={chatid} allChats={allChats} navbarref={navbarref}/>
+          <WrapComp chatid={chatid} allChats={allChats} navbarref={navbarref} />
         </main>
       </>
     );
