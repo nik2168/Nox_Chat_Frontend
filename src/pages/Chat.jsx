@@ -136,7 +136,7 @@ const [updateMessageOnlineToSeen] = useLazyChangeMessageToSeenQuery()
       .then(({ data }) => console.log(data?.message))
       .catch((e) => console.log(e));
 
-  }, [isChatOnline]);
+  }, []);
 
 
   // infinite scroll
