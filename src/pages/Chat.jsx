@@ -81,6 +81,8 @@ const Chat = ({ chatid, allChats, navbarref }) => {
 
   const chat = useRef(); // ref to chat
 
+
+
   const chatDetails = useGetChatDetailsQuery({ chatid, populate: true });
   const oldMessagesChunk = useGetMessagesQuery({ chatid, page });
 
@@ -101,10 +103,12 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   const members = curChat?.members;
 
 
+    const chatOnlineUsersMap = new Map(Object.entries(onlineChatMembers));
+
   const curChatMembersName = curChat?.members.map((i) => i.name).join(", ");
   let avatar = curChat?.avatar?.url;
   let name = curChat?.name;
-  let otherMember;
+  let otherMember = '';
   if (!curChat?.groupChat) {
     otherMember = curChat?.members.find(
       (i) => i._id.toString() !== user._id.toString()
@@ -117,26 +121,10 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   let isChatOnline = false;
   if (!curChat?.groupChat) {
     isOnline = onlineMembers.includes(otherMember?._id.toString());
-    if(onlineChatMembers?.chatId?.toString() === chatid?.toString()){
-    isChatOnline = onlineChatMembers?.chatOnlineMembers.includes(otherMember?._id.toString());
+    if(chatOnlineUsersMap?.has(otherMember?._id?.toString()) && chatOnlineUsersMap?.get(otherMember?._id?.toString()).toString() === chatid.toString()){
+    isChatOnline = true;
     }
   }
-
-  // useEffect(() => {
-  //   oldMessagesChunk?.refetch();
-  // }, [isChatOnline]);
-
-const [updateMessageOnlineToSeen] = useLazyChangeMessageToSeenQuery()
-
-
-  useEffect(() => {
-//     // marked all online or send messages to seen if user is online and in this chat
-
-    updateMessageOnlineToSeen(chatid)
-      .then(({ data }) => console.log(data?.message))
-      .catch((e) => console.log(e));
-
-  }, []);
 
 
   // infinite scroll
@@ -181,8 +169,7 @@ const [updateMessageOnlineToSeen] = useLazyChangeMessageToSeenQuery()
     if (!message.trim()) return;
 
     // emitting message to the server ...
-    socket.emit(NEW_MESSAGE, { chatid, members, message, isOnline, isChatOnline });
-  // console.log("emitting new message", message, isOnline, isChatOnline)
+    socket.emit(NEW_MESSAGE, { chatid, members, message, otherMember, isChatOnline });
     setcurmessage("");
   };
 
@@ -216,10 +203,15 @@ const [updateMessageOnlineToSeen] = useLazyChangeMessageToSeenQuery()
   // will use newMessages function inside useCallback so that it won't created everytime we got new message
   const newMessageListner = useCallback(
     (data) => {
-      if (data?.chatid.toString() !== chatid.toString()) return;
+
+      if (data?.chatid.toString() !== chatid.toString()) {
+        console.log("return chat id not matched !")
+        return;
+      }
+      console.log(data.message.content, isChatOnline)
       setMessages((pre) => [...pre, data.message]);
     },
-    [chatid]
+    []
   );
 
  // update message status for other users
@@ -347,7 +339,7 @@ setAllMessages(updatedStatus)
               </p>
             )
           )}
-          {(!isTyping && !curChat?.groupChat && isOnline && (
+          {(!isTyping && !curChat?.groupChat && isChatOnline && (
             <p className="chattypingspan">online</p>
           )) ||
             (!curChat?.groupChat && !isOnline && (

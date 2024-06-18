@@ -1,20 +1,14 @@
-let a = [{
-    name: "seen",
-    class: "12th"
-},
-{
-    name: "online",
-    class: "10th"
+// const a = new Map()
+// a.set("a", 1)
+// a.set("b", 2)
+
+// const obj = Object.fromEntries(a.entries());
+
+const obj = {
+    name : "nik",
+    age : "20",
 }
-]
 
-console.log(a)
+const map = new Map(Object.entries(obj))
 
-const result = a.map((i) => {
-    if(i.name === "online"){
-        i["name"] = "seen"
-    }
-    return i
-})
-
-console.log(result)
+console.log(map);

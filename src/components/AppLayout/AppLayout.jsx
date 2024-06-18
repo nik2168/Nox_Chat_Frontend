@@ -62,16 +62,16 @@ const AppLayout = () => (WrapComp) => {
 
     const [search, setSearch] = useState("");
 
-    // marked all messages to online
-    const [updateMessageSendToOnline] = useLazyChangeMessageToOnlineQuery();
+    // // marked all messages to online
+    // const [updateMessageSendToOnline] = useLazyChangeMessageToOnlineQuery();
 
-    useEffect(() => {
-      // marked all send messages to online if user is online
+    // useEffect(() => {
+    //   // marked all send messages to online if user is online
 
-      updateMessageSendToOnline()
-        .then(({ data }) => console.log(data?.message))
-        .catch((e) => console.log(e));
-    }, []);
+    //   updateMessageSendToOnline()
+    //     .then(({ data }) => console.log(data?.message))
+    //     .catch((e) => console.log(e));
+    // }, []);
 
     // my chats fetching ...
     const { isLoading, data, isError, error, refetch } =
@@ -136,16 +136,10 @@ const AppLayout = () => (WrapComp) => {
       dispatch(setOnlineMembers(data));
     }, []);
 
-    const chatOnlineUsersListener = useCallback(
-      ({ chatOnlineMembers, chatId }) => {
-        const data = {
-          chatOnlineMembers,
-          chatId,
-        };
-        dispatch(setChatOnlineMembers(data))
-      },
-      []
-    );
+    const chatOnlineUsersListener = useCallback(({ chatOnlineMembers }) => {
+
+      dispatch(setChatOnlineMembers(chatOnlineMembers));
+    }, []);
 
     const eventHandler = {
       [NEW_MESSAGE_ALERT]: newMessagesAlert,
