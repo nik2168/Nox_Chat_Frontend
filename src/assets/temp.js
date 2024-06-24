@@ -1,14 +1,76 @@
-// const a = new Map()
-// a.set("a", 1)
-// a.set("b", 2)
 
-// const obj = Object.fromEntries(a.entries());
+// let obj = {
+//   name: { first: "Robert", middle: "", last: "Smith" },
+//   age: 25,
+//   DOB: "-",
+//   hobbies: ["running", "coding", "-"],
+//   education: { highschool: "N/A", college: "Yale" },
+// };
 
-const obj = {
-    name : "nik",
-    age : "20",
-}
 
-const map = new Map(Object.entries(obj))
+// let count = 0;
 
-console.log(map);
+
+// const removeKeys = (obj, count) => {
+//     for(let key in obj){
+//      if (obj[key] === "N/A" || obj[key] === "-" || !obj[key]) {
+//        delete obj[key];
+//        count++;
+//      }
+//     }
+//     return obj;
+// }
+
+
+
+// for(let key in obj){
+//         let pair = obj[key];
+//         let type = typeof(pair)
+
+//          if (Array.isArray(pair)) {
+//            let newArr = [];
+//            for (let i = 0; i < pair.length; i++) {
+//              if (pair[i] === "N/A" || pair[i] === "-" || !pair[i]) {
+//                count++;
+//              } else {
+//                newArr.push(pair[i]);
+//              }
+//            }
+//            obj[key] = newArr;
+//          }
+
+// else if(type.toString() === "object") {
+//     for(let data in pair){
+//         if(pair[data] === "N/A" || pair[data] === "-" || !pair[data]){
+//             delete pair[data];
+//             count++;
+//         }
+//     }
+//     obj[key] = pair;
+// }
+
+
+//  else{
+//  if (obj[key] === "N/A" || obj[key] === "-" || !obj[key]) {
+//    delete obj[key];
+//    count++;
+//  }
+// }
+
+// }
+
+// const countObj = {
+//   items_removed : count
+// };
+
+// console.log(countObj)
+
+// const strObj = JSON.stringify(obj)
+
+// console.log(strObj);
+
+
+let a = new Date().toISOString();
+let b = "2024-06-23T09:58:15.577Z";
+
+console.log(a>b)

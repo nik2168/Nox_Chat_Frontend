@@ -87,8 +87,9 @@ const AppLayout = () => (WrapComp) => {
     );
 
     const newRequestAlert = useCallback(() => {
+      console.log("new Req alert")
       dispatch(incrementNotification());
-    }, [dispatch]);
+    }, []);
 
     const startTypingListner = useCallback(
       (data) => {

@@ -5,7 +5,7 @@ import { FileOpen } from "@mui/icons-material";
 
 const initialState = {
   onlineMembers: [],
-  onlineChatMembers: {},
+  onlineChatMembers: {},  
   notificationCount: 0,
   newMessageAlert: getOrSaveFromStorage({
     key: NEW_MESSAGE_ALERT,

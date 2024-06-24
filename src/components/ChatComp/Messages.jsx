@@ -12,21 +12,29 @@ const Messages = ({
   allMessages,
   user,
   scrollElement,
-  chatid,
   messages,
   groupChat,
-  members,
-  otherMember,
 }) => {
   const { newGroupAlert } = useSelector((state) => state.chat);
 
   const autoScrollDiv = useRef();
 
+  // const lastSeenTime = otherMember?.lastSeen;
+  // let lastChatSeenTime;
+  // for(let i = 0; i < lastChatOnlineArray?.length; i++){
+  //   let memObj = lastChatOnlineArray[i];
+  //   if(memObj?.memberId?.toString() !== user?._id?.toString()){
+  //     console.log("here : ",memObj?.lastChatOnline)
+  //     lastChatSeenTime = memObj?.lastChatOnline
+  //   }
+  // }
+
 
   useEffect(() => {
     if (autoScrollDiv.current)
       autoScrollDiv.current.scrollIntoView({ behaviour: "smooth" });
-  }, [messages]);
+  }, [allMessages]);
+
 
   return (
     <ul
@@ -40,7 +48,15 @@ const Messages = ({
       {newGroupAlert?.isNewAlert && <p>{newGroupAlert.message}</p>}
 
       {allMessages?.map((i) => {
-        const { _id, content, isAlert, attachments, status, sender, createdAt } = i;
+        const {
+          _id,
+          content,
+          isAlert,
+          attachments,
+          sender,
+          createdAt,
+        } = i;
+
 
         const timeAgo = moment(createdAt).fromNow();
         const samesender = user?._id.toString() === sender?._id.toString();
@@ -110,16 +126,21 @@ const Messages = ({
                     <p className="textssentp">{content}</p>
                     <div className="inboxtimetickdiv">
                       <p className="textssenttimeStamps">{timeAgo}</p>
-                      {(status === "send" && (
-                        <Done
-                          sx={{
-                            height: "1rem",
-                            width: "1rem",
-                            color: "whitesmoke",
-                          }}
-                        />
-                      )) ||
-                        (status === "online" && (
+                      {/* {(lastSeenTime < createdAt &&
+                        lastChatSeenTime < createdAt &&
+                        !isOnline &&
+                        !isChatOnline && (
+                          <Done
+                            sx={{
+                              height: "1rem",
+                              width: "1rem",
+                              color: "whitesmoke",
+                            }}
+                          />
+                        )) ||
+                        (lastSeenTime >= createdAt &&
+                          lastChatSeenTime < createdAt) ||
+                        (isOnline && !isChatOnline && (
                           <DoneAll
                             sx={{
                               height: "1rem",
@@ -128,7 +149,7 @@ const Messages = ({
                             }}
                           />
                         )) ||
-                        (status === "seen" && (
+                        ((lastChatSeenTime >= createdAt || isChatOnline) && (
                           <DoneAll
                             sx={{
                               height: "1rem",
@@ -136,7 +157,7 @@ const Messages = ({
                               color: "yellow",
                             }}
                           />
-                        ))}
+                        ))} */}
                     </div>
                   </div>
                 </li>
