@@ -5,6 +5,7 @@ import {
   EmojiEmotions,
   MoreVert,
   Send,
+  Timer,
 } from "@mui/icons-material";
 import { Skeleton } from "@mui/material";
 import React, {
@@ -30,6 +31,7 @@ import {
   NEW_MESSAGE,
   REFETCH_CHATS,
   REFETCH_MESSAGES,
+  SCHEDULE_MESSAGE,
   START_TYPING,
   STOP_TYPING,
 } from "../constants/events.js";
@@ -71,6 +73,7 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   const [page, setPage] = useState(1);
   const [imTyping, setImTyping] = useState(false);
   const [onlineLastSeen, setOnlineLastSeen] = useState("");
+  const [scheduleTime, setScheduleTime] = useState("");
 
   const navigate = useNavigate();
 
@@ -79,6 +82,8 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   const groupsetting = useRef();
 
   const chatsetting = useRef();
+
+  const scheduleMessage = useRef();
 
   const clearTime = useRef();
 
@@ -181,6 +186,25 @@ const Chat = ({ chatid, allChats, navbarref }) => {
       isChatOnline,
     });
     setcurmessage("");
+  };
+
+  const scheduleMessageHandler = (e) => {
+    e.preventDefault();
+    if (!message.trim()) return;
+
+    // emitting message to the server ...
+    socket.emit(SCHEDULE_MESSAGE, {
+      chatid,
+      members,
+      message,
+      otherMember,
+      scheduleTime,
+    });
+
+    setcurmessage("");
+    setScheduleTime("");
+
+    scheduleMessage.current.classList.remove("active");
   };
 
   const onChangeHandler = (e) => {
@@ -391,12 +415,51 @@ const Chat = ({ chatid, allChats, navbarref }) => {
             onChange={(e) => onChangeHandler(e)}
           />
 
-          <EmojiEmotions
-            sx={{
-              position: "absolute",
-              right: "0.5rem",
+          <div className="scheduleMessage" ref={scheduleMessage}>
+            <div className="scheduleCross">
+              <p>Schedule a message</p>
+            </div>
+            <div className="scheduleInputDiv">
+              <input
+                type="number"
+                className="scheduleInput"
+                value={scheduleTime}
+                onChange={(e) => setScheduleTime(e.currentTarget.value)}
+              />
+              <p className="scheduleText">MIN</p>
+            </div>
+            <div className="sendButtonDiv">
+              <button
+                className="scheduleCancel"
+                onClick={() => {
+                  scheduleMessage.current.classList.remove("active");
+                  setScheduleTime("");
+                }}
+              >
+                CANCEL
+              </button>
+              <button
+                className="scheduleSend"
+                onClick={(e) => scheduleMessageHandler(e)}
+              >
+                SCHEDULE
+              </button>
+            </div>
+          </div>
+
+          <div
+            className="scheduleIconDiv"
+            onClick={() => {
+              if (scheduleMessage.current.classList.contains("active")) {
+                scheduleMessage.current.classList.remove("active");
+                setScheduleTime("");
+                return;
+              }
+              scheduleMessage.current.classList.add("active");
             }}
-          />
+          >
+            <Timer className="scheduleIcon" />
+          </div>
         </div>
 
         <button

@@ -70,7 +70,11 @@
 // console.log(strObj);
 
 
-let a = new Date().toISOString();
-let b = "2024-06-23T09:58:15.577Z";
+// let a = new Date().toISOString();
+// let b = "2024-06-23T09:58:15.577Z";
 
-console.log(a>b)
+// console.log(a>b)
+
+setTimeout(() => {
+console.log("hi")
+}, 3000)
