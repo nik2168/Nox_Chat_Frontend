@@ -9,6 +9,7 @@ import AddFriends from "../ChatList/addFriend";
 import { useAsyncMutation } from "../../hooks/hook";
 import { useLazySearchUserQuery, useSendRequestMutation } from "../../redux/api/api";
 import { useSelector } from "react-redux";
+import { transformImage } from "../../lib/features";
 
 
 const NoxVerse = ({ curnav, allChats }) => {
@@ -115,8 +116,8 @@ const addUserWindow = useRef(); // open close window
                 onClick={() => (allChats.current.style.zIndex = "0")}
               >
                 <img
-                  src={
-                    avatar ||
+                  src={transformImage(
+                    avatar, 400) ||
                     "https://res.cloudinary.com/dki615p7n/image/upload/v1715486888/default_avatar_tvgr8w.jpg"
                   }
                   alt=""
