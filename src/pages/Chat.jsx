@@ -261,7 +261,10 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   useSocketEvents(socket, events); // using a custom hook to listen for events array
 
   return chatDetails?.isLoading ? (
-    <Skeleton className="chat" />
+    <div className="chat">
+      <Skeleton className="chat-person-div" />
+      <Skeleton className="chat-message-div" />
+    </div>
   ) : (
     <section className="chat" ref={chat}>
       {curChat?.groupChat ? (

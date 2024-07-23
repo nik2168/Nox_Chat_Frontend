@@ -16,8 +16,10 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-image: url("../Images/classicbg.jpg");
-  background-size: cover;
+  background-color: #212b36;
+  scrollbar-color: dark;
+  /* background-image: url("../Images/classicbg.jpg"); */
+  /* background-size: cover; */
 }
 
 .image-border {

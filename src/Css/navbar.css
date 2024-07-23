@@ -10,6 +10,8 @@
 body {
   backdrop-filter: blur(3px);
   height: 100vh;
+    scrollbar-color: dark;
+
 }
 
 main {

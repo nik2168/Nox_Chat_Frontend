@@ -240,6 +240,8 @@
   padding-top: 23vh;
   padding-bottom: 25vh;
   height: 100vh;
+    scrollbar-color: dark;
+
   z-index: 0;
   overflow-y: scroll;
 }
