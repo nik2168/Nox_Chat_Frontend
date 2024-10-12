@@ -205,9 +205,11 @@ const Chat = ({ chatid, allChats, navbarref }) => {
 
   const onChangeHandler = (e) => {
     setcurmessage(e.target.value);
-    const filteredMembers = members.filter(
-      (i) => i._id.toString() !== user._id.toString()
-    );
+    let filteredMembers = [];
+    members.map((i) => {
+      if (i._id.toString() !== user._id.toString())
+        filteredMembers.push(i._id.toString());
+    });
     if (!imTyping) {
       socket.emit(START_TYPING, {
         filteredMembers,
@@ -227,7 +229,6 @@ const Chat = ({ chatid, allChats, navbarref }) => {
 
   // will use newMessages function inside useCallback so that it won't created everytime we got new message
   const newMessageListner = useCallback(({ chatId, message }) => {
-    console.log("Yess", chatId, message);
     if (chatId.toString() !== chatid.toString()) {
       console.log("return chat id not matched !");
       return;
@@ -354,7 +355,7 @@ const Chat = ({ chatid, allChats, navbarref }) => {
           {(!isTyping && !curChat?.groupChat && isChatOnline && (
             <p className="chattypingspan">online</p>
           )) ||
-            (!curChat?.groupChat && !isOnline && (
+            (!curChat?.groupChat && !isOnline && !isTyping && (
               <p className="chattypingspan" style={{ color: "whitesmoke" }}>
                 {`last seen ${moment(lastSeenTime).fromNow()}`}
               </p>

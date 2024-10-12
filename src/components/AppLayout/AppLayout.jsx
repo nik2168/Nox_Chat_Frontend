@@ -90,8 +90,7 @@ const AppLayout = () => (WrapComp) => {
     }, []);
 
     const startTypingListner = useCallback((data) => {
-
-      if (!data.filteredMembers.includes(user._id.toString())) return;
+      if (data.filteredMembers.includes(user._id.toString())) {
         dispatch(
           setAllChatsTyping({
             isTyping: true,
@@ -100,20 +99,23 @@ const AppLayout = () => (WrapComp) => {
           })
         );
 
-      if (data?.chatid.toString() !== chatid.toString()) return;
-       dispatch(setTyping(true));
+        if (data?.chatid.toString() !== chatid.toString()) return;
+        dispatch(setTyping(true));
+      }
     }, []);
 
     const stopTypingListner = useCallback((data) => {
-      dispatch(
-        setAllChatsTyping({
-          isTyping: false,
-          typingChatid: data?.chatid,
-        })
-      );
+      if (data.filteredMembers.includes(user._id.toString())) {
+        dispatch(
+          setAllChatsTyping({
+            isTyping: false,
+            typingChatid: data?.chatid,
+          })
+        );
 
-      if (data?.chatid.toString() !== chatid.toString()) return;
-      dispatch(setTyping(false));
+        if (data?.chatid.toString() !== chatid.toString()) return;
+        dispatch(setTyping(false));
+      }
     }, []);
 
     const refetchListner = useCallback((members) => {
