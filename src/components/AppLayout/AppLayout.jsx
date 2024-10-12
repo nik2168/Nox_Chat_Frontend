@@ -90,15 +90,18 @@ const AppLayout = () => (WrapComp) => {
     }, []);
 
     const startTypingListner = useCallback((data) => {
-      dispatch(
-        setAllChatsTyping({
-          isTyping: true,
-          typingChatid: data?.chatid,
-          name: data?.username,
-        })
-      );
+
+      if (!data.filteredMembers.includes(user._id.toString())) return;
+        dispatch(
+          setAllChatsTyping({
+            isTyping: true,
+            typingChatid: data?.chatid,
+            name: data?.username,
+          })
+        );
+
       if (data?.chatid.toString() !== chatid.toString()) return;
-      dispatch(setTyping(true));
+       dispatch(setTyping(true));
     }, []);
 
     const stopTypingListner = useCallback((data) => {
