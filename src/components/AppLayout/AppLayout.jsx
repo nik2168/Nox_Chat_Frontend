@@ -1,22 +1,23 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import "../../Css/allchats.css";
 import "../../Css/chat.css";
 import "../../Css/creategroup.css";
 import "../../Css/groupsettings.css";
 import "../../Css/login.css";
 import "../../Css/navbar.css";
+import "../../Css/noxVerse.css";
+import "../../Css/noxVerseResponsive.css";
 import "../../Css/profilewindow.css";
 import "../../Css/responsiveAllChats.css";
 import "../../Css/responsiveChat.css";
-import "../../Css/responsiveNavbar.css";
-import "../../Css/noxVerse.css";
-import "../../Css/noxVerseResponsive.css";
 import "../../Css/responsiveCreateGroup.css";
+import "../../Css/responsiveNavbar.css";
 import Title from "../shared/Title";
 import Navbar from "./Navbar";
 
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  CHAT_ONLINE_USERS,
   MEMBER_REMOVED,
   NEW_MESSAGE_ALERT,
   NEW_REQUEST,
@@ -26,23 +27,17 @@ import {
   STOP_TYPING,
 } from "../../constants/events.js";
 import { useErrors, useSocketEvents } from "../../hooks/hook.jsx";
-import { getSocket } from "../../socket.jsx";
-import AllChats from "../ChatList/allChats";
-import { useDispatch, useSelector } from "react-redux";
+import { useMyChatsQuery } from "../../redux/api/api.js";
 import {
   incrementNotification,
   setAllChatsTyping,
-  setChatOnlineMembers,
   setNewMessagesAlert,
   setOnlineMembers,
   setTyping,
 } from "../../redux/reducer/chat.js";
-import { useNavigate, useParams } from "react-router-dom";
+import { getSocket } from "../../socket.jsx";
+import AllChats from "../ChatList/allChats";
 import NoxVerse from "../Nox Verse/NoxVerse.jsx";
-import {
-  useLazyChangeMessageToOnlineQuery,
-  useMyChatsQuery,
-} from "../../redux/api/api.js";
 
 const AppLayout = () => (WrapComp) => {
   return (props) => {
@@ -79,67 +74,58 @@ const AppLayout = () => (WrapComp) => {
     useErrors([{ isError, error }]);
 
     const newMessagesAlert = useCallback(
-      (data) => {
-        if (chatid === data?.chatid) return;
+      ({ data }) => {
+        if (!data.members.include(user._id.toString())) return;
+        if (!chatid === data?.chatid) {
+          playsound;
+        }
         dispatch(setNewMessagesAlert(data));
       },
       [chatid]
     );
 
-    const newRequestAlert = useCallback(() => {
-      console.log("new Req alert")
+    const newRequestAlert = useCallback((userId) => {
+      if (user._id.toString !== userId.toString()) return;
       dispatch(incrementNotification());
     }, []);
 
-    const startTypingListner = useCallback(
-      (data) => {
-        dispatch(
-          setAllChatsTyping({
-            isTyping: true,
-            typingChatid: data?.chatid,
-            name: data?.username,
-          })
-        );
-        if (data?.chatid.toString() !== chatid.toString()) return;
-        dispatch(setTyping(true));
-      },
-      [chatid]
-    );
+    const startTypingListner = useCallback((data) => {
+      dispatch(
+        setAllChatsTyping({
+          isTyping: true,
+          typingChatid: data?.chatid,
+          name: data?.username,
+        })
+      );
+      if (data?.chatid.toString() !== chatid.toString()) return;
+      dispatch(setTyping(true));
+    }, []);
 
-    const stopTypingListner = useCallback(
-      (data) => {
-        dispatch(
-          setAllChatsTyping({
-            isTyping: false,
-            typingChatid: data?.chatid,
-          })
-        );
+    const stopTypingListner = useCallback((data) => {
+      dispatch(
+        setAllChatsTyping({
+          isTyping: false,
+          typingChatid: data?.chatid,
+        })
+      );
 
-        if (data?.chatid.toString() !== chatid.toString()) return;
-        dispatch(setTyping(false));
-      },
-      [chatid]
-    );
+      if (data?.chatid.toString() !== chatid.toString()) return;
+      dispatch(setTyping(false));
+    }, []);
 
-    const refetchListner = useCallback(() => {
+    const refetchListner = useCallback((members) => {
+      if (!members.include(user._id.toString())) return;
       refetch();
-    }, [refetch]);
+    }, []);
 
-    const refetchNewMembers = useCallback(
-      (data) => {
-        if (data?.userId === user._id.toString()) navigate(`/`);
-        refetch();
-      },
-      [refetch, navigate]
-    );
+    const refetchNewMembers = useCallback((data) => {
+      if (!data.allChatMembers.includes(user._id.toString())) return;
+      if (data?.userId === user._id.toString()) navigate(`/`);
+      refetch();
+    }, []);
 
     const onlineUsersListener = useCallback((data) => {
       dispatch(setOnlineMembers(data));
-    }, []);
-
-    const chatOnlineUsersListener = useCallback(({ chatOnlineMembers }) => {
-
-      dispatch(setChatOnlineMembers(chatOnlineMembers));
     }, []);
 
     const eventHandler = {
@@ -150,7 +136,6 @@ const AppLayout = () => (WrapComp) => {
       [REFETCH_CHATS]: refetchListner,
       [MEMBER_REMOVED]: refetchNewMembers,
       [ONLINE_USERS]: onlineUsersListener,
-      [CHAT_ONLINE_USERS]: chatOnlineUsersListener,
     };
 
     useSocketEvents(socket, eventHandler);

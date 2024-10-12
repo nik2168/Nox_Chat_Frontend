@@ -75,6 +75,5 @@
 
 // console.log(a>b)
 
-setTimeout(() => {
-console.log("hi")
-}, 3000)
+const a = [1,2,34];
+console.log(a.includes(2))

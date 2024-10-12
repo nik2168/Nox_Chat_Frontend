@@ -2,12 +2,12 @@ import { useInfiniteScrollTop } from "6pp";
 import {
   Add,
   ArrowBackIosNew,
-  EmojiEmotions,
   MoreVert,
   Send,
   Timer,
 } from "@mui/icons-material";
 import { Skeleton } from "@mui/material";
+import moment from "moment";
 import React, {
   Suspense,
   lazy,
@@ -17,7 +17,7 @@ import React, {
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AppLayout from "../components/AppLayout/AppLayout";
 import ChatFilesMenu from "../components/ChatComp/ChatFilesMenu.jsx";
 import ChatSettings from "../components/ChatComp/ChatSettings";
@@ -26,11 +26,9 @@ import {
   ALERT,
   CHAT_JOINED,
   CHAT_LEAVE,
-  LAST_CHAT_ONLINE,
+  CHAT_ONLINE_USERS,
   LAST_ONLINE,
   NEW_MESSAGE,
-  REFETCH_CHATS,
-  REFETCH_MESSAGES,
   SCHEDULE_MESSAGE,
   START_TYPING,
   STOP_TYPING,
@@ -39,15 +37,13 @@ import { useErrors, useSocketEvents } from "../hooks/hook.jsx";
 import {
   useGetChatDetailsQuery,
   useGetMessagesQuery,
-  useLazyChangeMessageToOnlineQuery,
-  useLazyChangeMessageToSeenQuery,
 } from "../redux/api/api.js";
 import {
   removeNewMessagesAlert,
+  setChatOnlineMembers,
   setNewGroupAlert,
 } from "../redux/reducer/chat.js";
 import { getSocket } from "../socket";
-import moment from "moment";
 
 // import GroupSettings from "../components/ChatComp/groupsettings";
 const GroupSettings = lazy(() =>
@@ -231,6 +227,7 @@ const Chat = ({ chatid, allChats, navbarref }) => {
 
   // will use newMessages function inside useCallback so that it won't created everytime we got new message
   const newMessageListner = useCallback(({ chatId, message }) => {
+    console.log("Yess", chatId, message);
     if (chatId.toString() !== chatid.toString()) {
       console.log("return chat id not matched !");
       return;
@@ -244,17 +241,23 @@ const Chat = ({ chatid, allChats, navbarref }) => {
     setOnlineLastSeen(data);
   }, []);
 
-  const alertListener = useCallback(
-    (data) => {
-      if (data?.chatid?.toString() !== chatid?.toString()) return;
-      setNewGroupAlert(dispatch(data));
+  const alertListener = useCallback((data) => {
+    if (data?.chatid?.toString() !== chatid?.toString()) return;
+    setNewGroupAlert(dispatch(data));
+  }, []);
+
+  const chatOnlineUsersListener = useCallback(
+    ({ chatOnlineMembers, chatId }) => {
+      if (chatId.toString() != chatid.toString()) return;
+      dispatch(setChatOnlineMembers(chatOnlineMembers));
     },
-    [chatid]
+    []
   );
 
   const events = {
     [NEW_MESSAGE]: newMessageListner,
     [ALERT]: alertListener,
+    [CHAT_ONLINE_USERS]: chatOnlineUsersListener,
     [LAST_ONLINE]: lastOnlineListner,
   };
 
