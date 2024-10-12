@@ -74,8 +74,8 @@ const AppLayout = () => (WrapComp) => {
     useErrors([{ isError, error }]);
 
     const newMessagesAlert = useCallback(
-      ({ data }) => {
-        if (!data.members.include(user._id.toString())) return;
+      (data) => {
+        if (!data.members.includes(user._id.toString())) return;
         if (!chatid === data?.chatid) {
           playsound;
         }
@@ -98,9 +98,6 @@ const AppLayout = () => (WrapComp) => {
             name: data?.username,
           })
         );
-
-        if (data?.chatid.toString() !== chatid.toString()) return;
-        dispatch(setTyping(true));
       }
     }, []);
 
@@ -112,9 +109,6 @@ const AppLayout = () => (WrapComp) => {
             typingChatid: data?.chatid,
           })
         );
-
-        if (data?.chatid.toString() !== chatid.toString()) return;
-        dispatch(setTyping(false));
       }
     }, []);
 

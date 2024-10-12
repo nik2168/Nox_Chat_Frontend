@@ -42,6 +42,7 @@ import {
   removeNewMessagesAlert,
   setChatOnlineMembers,
   setNewGroupAlert,
+  setTyping,
 } from "../redux/reducer/chat.js";
 import { getSocket } from "../socket";
 
@@ -173,10 +174,16 @@ const Chat = ({ chatid, allChats, navbarref }) => {
     e.preventDefault();
     if (!message.trim()) return;
 
+    let membersId = [];
+
+    members.map((i) => {
+      if(i._id.toString() != user._id.toString())membersId.push(i._id)
+  });
+
     // emitting message to the server ...
     socket.emit(NEW_MESSAGE, {
       chatid,
-      members,
+      members: membersId,
       message,
       otherMember,
       isChatOnline,
@@ -188,10 +195,14 @@ const Chat = ({ chatid, allChats, navbarref }) => {
     e.preventDefault();
     if (!message.trim()) return;
 
+        let membersId = [];
+
+        members.map((i) => membersId.push(i._id));
+
     // emitting message to the server ...
     socket.emit(SCHEDULE_MESSAGE, {
       chatid,
-      members,
+      members: membersId,
       message,
       otherMember,
       scheduleTime,
@@ -230,7 +241,6 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   // will use newMessages function inside useCallback so that it won't created everytime we got new message
   const newMessageListner = useCallback(({ chatId, message }) => {
     if (chatId.toString() !== chatid.toString()) {
-      console.log("return chat id not matched !");
       return;
     }
 
@@ -255,9 +265,25 @@ const Chat = ({ chatid, allChats, navbarref }) => {
     []
   );
 
+  const startTypingListner = useCallback((data) => {
+    if (data.filteredMembers.includes(user._id.toString())) {
+      if (data?.chatid.toString() !== chatid.toString()) return;
+      dispatch(setTyping(true));
+    }
+  }, []);
+
+  const stopTypingListner = useCallback((data) => {
+    if (data.filteredMembers.includes(user._id.toString())) {
+      if (data?.chatid.toString() !== chatid.toString()) return;
+      dispatch(setTyping(false));
+    }
+  }, []);
+
   const events = {
     [NEW_MESSAGE]: newMessageListner,
     [ALERT]: alertListener,
+    [START_TYPING]: startTypingListner,
+    [STOP_TYPING]: stopTypingListner,
     [CHAT_ONLINE_USERS]: chatOnlineUsersListener,
     [LAST_ONLINE]: lastOnlineListner,
   };
