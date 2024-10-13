@@ -37,6 +37,7 @@ const CurNotifications = () => {
         };
            await acceptRequestMutation( `${accept? "accepting" : "rejecting"} friend request`,data);
            refetch();
+               dispatch(resetNotification());
                notificationsWindow.current.classList.remove("active");
   }
 

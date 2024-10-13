@@ -85,7 +85,7 @@ const AppLayout = () => (WrapComp) => {
     );
 
     const newRequestAlert = useCallback((userId) => {
-      if (user._id.toString !== userId.toString()) return;
+      if (user._id.toString() !== userId.toString()) return;
       dispatch(incrementNotification());
     }, []);
 
@@ -113,7 +113,7 @@ const AppLayout = () => (WrapComp) => {
     }, []);
 
     const refetchListner = useCallback((members) => {
-      if (!members.include(user._id.toString())) return;
+      if (!members.includes(user._id.toString())) return;
       refetch();
     }, []);
 
