@@ -1,21 +1,25 @@
 import {
-    AudioFile,
-    DocumentScannerRounded as DocumentIcon,
-    PhotoAlbumRounded as PhotoIcon,
-    VideoCameraBackRounded as VideoIcon
+  AudioFile,
+  DocumentScannerRounded as DocumentIcon,
+  PhotoAlbumRounded as PhotoIcon,
+  VideoCameraBackRounded as VideoIcon,
+  PollRounded,
 } from "@mui/icons-material";
 import React from "react";
 import toast from "react-hot-toast";
 import { useSendAttachmentsMutation } from "../../redux/api/api";
 
-const ChatFilesMenu = ({ chat, chatid }) => {
-
-    const [sendAttachments] = useSendAttachmentsMutation()
+const ChatFilesMenu = ({ chat, chatid, pollWindow }) => {
+  const [sendAttachments] = useSendAttachmentsMutation();
 
   const fileChangeHandler = async (e, key) => {
+    if (key.toString() === "Poll") {
+      console.log("open poll window !");
+      return;
+    }
 
     const files = Array.from(e.target.files);
-    
+
     if (files.length <= 0) return;
     if (files.length > 5)
       return toast.error(`You can only send 5 ${key} at a time`);
@@ -24,19 +28,17 @@ const ChatFilesMenu = ({ chat, chatid }) => {
     chat.current.classList.remove("active-files");
 
     try {
-
       const formdata = new FormData();
-      formdata.append("chatId", chatid)
-      files.forEach((file) => formdata.append("files", file))
+      formdata.append("chatId", chatid);
+      files.forEach((file) => formdata.append("files", file));
 
-      const res = await sendAttachments(formdata)
-      
-      if(res?.data){
-        toast.success(`${key} send successfully !`, {id: toastId})
-      }
-      else{
-        console.log(res?.error)
-        toast.error(`failed while sending ${key}`, {id : toastId})
+      const res = await sendAttachments(formdata);
+
+      if (res?.data) {
+        toast.success(`${key} send successfully !`, { id: toastId });
+      } else {
+        console.log(res?.error);
+        toast.error(`failed while sending ${key}`, { id: toastId });
       }
     } catch (err) {
       toast.error(err?.data?.message, { id: toastId });
@@ -46,6 +48,29 @@ const ChatFilesMenu = ({ chat, chatid }) => {
   return (
     <>
       <article className="chat-files"></article>
+      <div className="chat-file poll" onClick={() => {
+        if(!pollWindow.current.classList.contains("active")){
+                        pollWindow.current.classList.add("active");
+                        return;
+
+        }
+        pollWindow.current.classList.remove("active");
+
+        }}>
+        <PollRounded
+          sx={{
+            color: "#f9fafb",
+            fontSize: "2.3rem",
+          }}
+        />
+        <span>Poll</span>
+        {/* <input
+          type="none"
+          id="image"
+          onChange={(e) => fileChangeHandler(e, "Poll")}
+          className="chatFileInput"
+        /> */}
+      </div>
 
       <div className="chat-file photos">
         <PhotoIcon
@@ -101,7 +126,7 @@ const ChatFilesMenu = ({ chat, chatid }) => {
         />
       </div>
 
-      <div className="chat-file poll">
+      <div className="chat-file audio">
         <AudioFile
           sx={{
             color: "#f9fafb",
@@ -117,21 +142,6 @@ const ChatFilesMenu = ({ chat, chatid }) => {
           onChange={(e) => fileChangeHandler(e, "Audios")}
           className="chatFileInput"
         />
-
-        {/* <div className="chat-file poll">
-        <PollIcon
-          sx={{
-            color: "#f9fafb",
-            fontSize: "2.3rem",
-          }}
-        />
-        <span>Poll</span>
-        <input
-          type="file"
-          id="image"
-          onChange={(e) => fileChangeHandler(e)}
-          className="chatFileInput"
-        /> */}
       </div>
     </>
   );

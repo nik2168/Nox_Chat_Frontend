@@ -7,6 +7,7 @@ const initialState = {
   onlineMembers: [],
   onlineChatMembers: {},  
   notificationCount: 0,
+  allMessages: [],
   newMessageAlert: getOrSaveFromStorage({
     key: NEW_MESSAGE_ALERT,
     get: true,
@@ -36,6 +37,21 @@ const chatSlice = createSlice({
 
     resetNotification: (state) => {
       state.notificationCount = 0;
+    },
+
+    setAllMessages: (state, action) => {
+      state.allMessages = action.payload
+    },
+
+    updateAMessage: (state, action) => {
+       const tempId = action.payload.tempId;
+       const messageData = action.payload.messageData;
+       state.allMessages = state.allMessages.map((i) => {
+        if (i.tempId.toString() === tempId.toString()) {
+          i.options = messageData.options;
+        }
+        return i;
+       })
     },
 
     setNewMessagesAlert: (state, action) => {
@@ -97,6 +113,8 @@ export const {
   removeNewGroupAlert,
   setOnlineMembers,
   setChatOnlineMembers,
+  setAllMessages,
+  updateAMessage,
 } = chatSlice.actions;
 
 export default chatSlice;

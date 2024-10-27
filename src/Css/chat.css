@@ -9,6 +9,7 @@
   color: #c4cdd5;
   align-items: center;
   position: relative;
+
 }
 
 .chatdefault div {
@@ -38,9 +39,7 @@
   overflow: hidden;
 }
 
-
 .backButton {
-
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -190,6 +189,8 @@
   padding-bottom: 30%;
   overflow-y: scroll;
   overflow-x: hidden;
+  color: #161c24;
+  transition: all 0.4s ease-in-out;
 }
 
 .textsinboxOuterDiv {
@@ -197,6 +198,7 @@
   height: fit-content;
   padding: 0.7rem;
   padding-right: 6rem;
+  transition: all 0.4s ease-in-out;
 }
 
 .textsinboxdiv {
@@ -209,16 +211,16 @@
   border-radius: 0.6rem;
   border-bottom-left-radius: 0rem;
   position: relative;
+  transition: all 0.4s ease-in-out;
 }
-
 
 .inboxAttachmentsOuterdiv {
   width: 100%;
   height: fit-content;
   padding: 0.7rem;
   padding-right: 6rem;
+  transition: all 0.4s ease-in-out;
 }
-
 
 .inboxAttachments {
   height: fit-content;
@@ -232,8 +234,8 @@
   background-color: #c4cdd5;
   padding: 0.3rem;
   position: relative;
+  transition: all 0.4s ease-in-out;
 }
-
 
 .textsender {
   font-weight: 800;
@@ -241,6 +243,7 @@
   color: #0c53b7;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  transition: all 0.4s ease-in-out;
 }
 
 .textsinboxp {
@@ -249,12 +252,13 @@
   font-weight: 530;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  transition: all 0.4s ease-in-out;
 }
 
-.inboxtimetickdiv{
+.inboxtimetickdiv {
   width: 100%;
   height: 0.9rem;
-      padding-left: 0.5rem;
+  padding-left: 0.5rem;
   padding-right: 0.5rem;
   display: flex;
   flex-direction: row;
@@ -269,7 +273,7 @@
   justify-content: flex-end;
   align-items: center;
   color: #212b36;
-    padding-left: 0.5rem;
+  padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
 
@@ -284,12 +288,11 @@
   padding-left: 6rem;
 }
 
-
 .textssentdiv {
   height: fit-content;
   width: fit-content;
   background-color: #2d99ff;
- padding: 0.2rem;
+  padding: 0.2rem;
   padding-top: 0.3rem;
   padding-bottom: 0.3rem;
   border-radius: 0.6rem;
@@ -308,7 +311,6 @@
   padding-left: 6rem;
 }
 
-
 .sentAttachments {
   height: fit-content;
   width: fit-content;
@@ -324,7 +326,7 @@
 }
 
 .textssentp {
-  color: white;
+  color: #161c24;
   font-size: 0.8rem;
   font-weight: 530;
   padding-left: 0.5rem;
@@ -332,7 +334,7 @@
 }
 
 .textssenttimeStamps {
-   font-size: 0.63rem;
+  font-size: 0.63rem;
   font-weight: 1000;
   width: 100%;
   display: flex;
@@ -341,7 +343,7 @@
   align-items: center;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
-  color: #f9fafb;
+  color: #161c24;
 }
 
 .chatmessagesalert {
@@ -494,6 +496,11 @@
   background-color: #637381;
 }
 
+.chat.active-files .poll {
+  bottom: 21rem;
+  opacity: 1;
+}
+
 .chat.active-files .photos {
   bottom: 17rem;
   opacity: 1;
@@ -509,7 +516,7 @@
   opacity: 1;
 }
 
-.chat.active-files .poll {
+.chat.active-files .audio {
   bottom: 5rem;
   opacity: 1;
 }
@@ -594,27 +601,24 @@
   filter: blur(2px);
 }
 
-.scheduleIconDiv{
+.scheduleIconDiv {
   position: absolute;
-   right: 0.5rem;
-   width: 2rem;
-   height: 2rem;
-   border-radius: 50%;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   transition: all 0.4s ease-in;
+  right: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.4s ease-in;
 }
 
-.scheduleIconDiv:hover{
-   background-color: #494850;
-
+.scheduleIconDiv:hover {
+  background-color: #494850;
 }
 
-
-
-.scheduleMessage{
+.scheduleMessage {
   scale: 0;
   height: 10rem;
   width: 13rem;
@@ -630,10 +634,10 @@
   padding-bottom: 0.5rem;
   align-items: center;
   background-color: #ffffff1d;
-     transition: all 0.4s ease-in;
+  transition: all 0.4s ease-in;
 }
 
-.scheduleMessage.active{
+.scheduleMessage.active {
   scale: 1;
   height: 10rem;
   width: 13rem;
@@ -651,7 +655,7 @@
   background-color: #454f5b;
 }
 
-.scheduleCross{
+.scheduleCross {
   width: 100%;
   height: 20%;
   font-weight: 600;
@@ -661,8 +665,8 @@
   align-items: center;
 }
 
-.scheduleInputDiv{
-    width: 100%;
+.scheduleInputDiv {
+  width: 100%;
   height: 50%;
   padding-right: 0.6rem;
   display: flex;
@@ -672,7 +676,7 @@
   font-weight: 600;
 }
 
-.scheduleInput{
+.scheduleInput {
   width: 80%;
   height: 50%;
   border: none;
@@ -685,7 +689,7 @@
   border-radius: 1rem;
 }
 
-.sendButtonDiv{
+.sendButtonDiv {
   width: 100%;
   height: 20%;
   display: flex;
@@ -694,24 +698,174 @@
   align-items: center;
 }
 
-.sendButtonDiv button{
-   width: 5.6rem;
-   height: 2rem;
-   border: none;
-   box-shadow: none;
-   font-weight: 500;
-   border-radius: 0.6rem;
-   transition: all 0.3s ease-in-out;
+.sendButtonDiv button {
+  width: 5.6rem;
+  height: 2rem;
+  border: none;
+  box-shadow: none;
+  font-weight: 500;
+  border-radius: 0.6rem;
+  transition: all 0.3s ease-in-out;
 }
 
-.sendButtonDiv button:hover{
-   width: 5.6rem;
-   height: 2rem;
-   border: none;
-   box-shadow: none;
-   font-weight: 500;
-   border-radius: 0.6rem;
-   background-color: #637381;
-   color: #fff;
+.sendButtonDiv button:hover {
+  width: 5.6rem;
+  height: 2rem;
+  border: none;
+  box-shadow: none;
+  font-weight: 500;
+  border-radius: 0.6rem;
+  background-color: #637381;
+  color: #fff;
 }
 
+.PollWindowDiv.active {
+  position: absolute;
+  color: #dfe3e8;
+  z-index: 10;
+  bottom: 4rem;
+  background-color: #454f5b84;
+  backdrop-filter: blur(13px);
+  width: 80%;
+  height: 70%;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: all 0.4s ease-in-out;
+}
+
+.PollWindowDiv {
+  position: absolute;
+  color: #dfe3e8;
+  z-index: 10;
+  bottom: 2rem;
+  left: 2rem;
+  background-color: #454f5b84;
+  backdrop-filter: blur(13px);
+  width: 0%;
+  height: 0%;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: all 0.4s ease-in-out;
+}
+
+.PollControls {
+  width: 100%;
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 0.5rem;
+  padding-top: 0.3rem;
+  padding-right: 1rem;
+}
+
+.PollControls button {
+  background-color: transparent;
+  border: none;
+  color: #dfe3e8;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.pollBody {
+  width: 100%;
+  min-height: 90%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: auto;
+}
+
+.pollQuestion {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-top: 0.5rem;
+}
+
+.pollQuestion p {
+  font-weight: 600;
+  margin-top: 0rem;
+}
+
+.pollQuestion textarea {
+  width: 100%;
+  height: 2rem;
+  border-radius: 8px;
+  background-color: #c4cdd5;
+  border: none;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.3rem;
+  padding-left: 0.5rem;
+  font-weight: 500;
+}
+
+.pollQuestion textarea:focus {
+  outline: none;
+  border: none;
+}
+
+.optionsDiv {
+  width: 16rem;
+  height: fit-content;
+  padding: 0.3rem;
+}
+
+.optionDiv {
+  margin: 0.3rem;
+}
+
+.checkboxDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  height: 1.3rem;
+  font-size: small;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.checkboxDiv input:checked {
+  border: none;
+}
+.checkboxDiv input {
+  border: none;
+  outline: none;
+}
+
+.option {
+  display: flex;
+  flex-direction: row;
+  margin-left: 0.3rem;
+}
+
+.optionBarFill {
+  width: 13rem;
+  height: 1rem;
+  background-color: #dfe3e8;
+  border-radius: 1rem;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+.optionBarEmpty {
+  height: 1rem;
+  background-color: #0c53b7;
+  border-radius: 1rem;
+  position: absolute;
+}

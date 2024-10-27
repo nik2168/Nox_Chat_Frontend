@@ -8,6 +8,7 @@
 // };
 
 
+
 // let count = 0;
 
 
@@ -75,5 +76,16 @@
 
 // console.log(a>b)
 
-const a = [1,2,34];
-console.log(a.includes(2))
+// let a = [1,2,3];
+// a= a.filter((i) => i != 2)
+// console.log(a)
+
+const a = [1,2,3];
+const b = a.map((i) => {
+    if(i === 2){
+        i = 4;
+    }
+    return i
+})
+
+console.log(b)

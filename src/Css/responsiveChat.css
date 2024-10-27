@@ -485,25 +485,30 @@
     background-color: #637381;
   }
 
-  .chat.active-files .photos {
-    bottom: 17rem;
-    opacity: 1;
-  }
+.chat.active-files .poll {
+  bottom: 21rem;
+  opacity: 1;
+}
 
-  .chat.active-files .videos {
-    bottom: 13rem;
-    opacity: 1;
-  }
+.chat.active-files .photos {
+  bottom: 17rem;
+  opacity: 1;
+}
 
-  .chat.active-files .documents {
-    bottom: 9rem;
-    opacity: 1;
-  }
+.chat.active-files .videos {
+  bottom: 13rem;
+  opacity: 1;
+}
 
-  .chat.active-files .poll {
-    bottom: 5rem;
-    opacity: 1;
-  }
+.chat.active-files .documents {
+  bottom: 9rem;
+  opacity: 1;
+}
+
+.chat.active-files .audio {
+  bottom: 5rem;
+  opacity: 1;
+}
 
   .chat-files {
     position: absolute;

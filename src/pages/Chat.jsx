@@ -32,6 +32,7 @@ import {
   SCHEDULE_MESSAGE,
   START_TYPING,
   STOP_TYPING,
+  UPDATE_POLL,
 } from "../constants/events.js";
 import { useErrors, useSocketEvents } from "../hooks/hook.jsx";
 import {
@@ -40,11 +41,14 @@ import {
 } from "../redux/api/api.js";
 import {
   removeNewMessagesAlert,
+  setAllMessages,
   setChatOnlineMembers,
   setNewGroupAlert,
   setTyping,
+  updateAMessage,
 } from "../redux/reducer/chat.js";
 import { getSocket } from "../socket";
+import toast from "react-hot-toast";
 
 // import GroupSettings from "../components/ChatComp/groupsettings";
 const GroupSettings = lazy(() =>
@@ -57,16 +61,18 @@ const ChatSetting = lazy(() =>
 const Chat = ({ chatid, allChats, navbarref }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth); // Cur User
+  const { allMessages } = useSelector((state) => state.chat); // Cur User
 
   const { onlineMembers } = useSelector((state) => state.chat); // Cur User
   const { onlineChatMembers } = useSelector((state) => state.chat);
   const { isTyping } = useSelector((state) => state.chat);
   const { allChatsIsTyping } = useSelector((state) => state.chat); // Cur User
   const { newGroupAlert } = useSelector((state) => state.chat); // Cur User
+  const [pollLen, setPollLen] = useState(2);
 
   const [message, setcurmessage] = useState(""); // CurMessage
   const [messages, setMessages] = useState([]); // Messages List
-  const [allMessages, setAllMessages] = useState([]);
+  // const [allMessages, setAllMessages] = useState([]);
   const [page, setPage] = useState(1);
   const [imTyping, setImTyping] = useState(false);
   const [onlineLastSeen, setOnlineLastSeen] = useState("");
@@ -79,6 +85,8 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   const groupsetting = useRef();
 
   const chatsetting = useRef();
+
+  const pollWindow = useRef();
 
   const scheduleMessage = useRef();
 
@@ -165,7 +173,8 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   }, [chatid, members]);
 
   useEffect(() => {
-    setAllMessages([...oldMessages, ...messages]);
+    // setAllMessages([...oldMessages, ...messages]);
+    dispatch(setAllMessages([...oldMessages, ...messages]));
   }, [oldMessages, messages]);
 
   const socket = getSocket();
@@ -177,8 +186,8 @@ const Chat = ({ chatid, allChats, navbarref }) => {
     let membersId = [];
 
     members.map((i) => {
-      if(i._id.toString() != user._id.toString())membersId.push(i._id)
-  });
+      if (i._id.toString() != user._id.toString()) membersId.push(i._id);
+    });
 
     // emitting message to the server ...
     socket.emit(NEW_MESSAGE, {
@@ -195,9 +204,9 @@ const Chat = ({ chatid, allChats, navbarref }) => {
     e.preventDefault();
     if (!message.trim()) return;
 
-        let membersId = [];
+    let membersId = [];
 
-        members.map((i) => membersId.push(i._id));
+    members.map((i) => membersId.push(i._id));
 
     // emitting message to the server ...
     socket.emit(SCHEDULE_MESSAGE, {
@@ -279,6 +288,15 @@ const Chat = ({ chatid, allChats, navbarref }) => {
     }
   }, []);
 
+  const updatePollListner = useCallback(
+    ({ tempId, messageData, chatId, userId }) => {
+      if (chatId.toString() !== chatid.toString()) return;
+
+      dispatch(updateAMessage({ tempId, messageData }));
+    },
+    []
+  );
+
   const events = {
     [NEW_MESSAGE]: newMessageListner,
     [ALERT]: alertListener,
@@ -286,9 +304,47 @@ const Chat = ({ chatid, allChats, navbarref }) => {
     [STOP_TYPING]: stopTypingListner,
     [CHAT_ONLINE_USERS]: chatOnlineUsersListener,
     [LAST_ONLINE]: lastOnlineListner,
+    [UPDATE_POLL]: updatePollListner,
   };
 
   useSocketEvents(socket, events); // using a custom hook to listen for events array
+
+  // Polls
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const content = e.target.question.value;
+    const options = [];
+
+    for (let i = 2; i < e.target.length; i++) {
+      options.push({ content: e.target[i].value.toString(), members: [] });
+    }
+
+    console.log(options, content);
+
+    if (!content.trim()) return;
+
+    let membersId = [];
+
+    members.map((i) => {
+      if (i._id.toString() != user._id.toString()) membersId.push(i._id);
+    });
+
+    // emitting message to the server ...
+    socket.emit(NEW_MESSAGE, {
+      chatid,
+      members: membersId,
+      message: content,
+      otherMember,
+      isPoll: true,
+      options,
+      isChatOnline,
+    });
+
+    pollWindow.current.classList.remove("active");
+    e.target.reset();
+  };
+
+  const handleFormChange = (e) => {};
 
   return chatDetails?.isLoading ? (
     <div className="chat">
@@ -319,7 +375,6 @@ const Chat = ({ chatid, allChats, navbarref }) => {
           />
         </Suspense>
       )}
-
       <div className="chat-person-div">
         <button
           className="backButton"
@@ -402,9 +457,7 @@ const Chat = ({ chatid, allChats, navbarref }) => {
           <MoreVert sx={{ color: "#f9fafb" }} />
         </span>
       </div>
-
       <ChatSettings />
-
       {chatDetails?.isLoading ? (
         <Skeleton />
       ) : (
@@ -418,9 +471,9 @@ const Chat = ({ chatid, allChats, navbarref }) => {
           otherMember={otherMember}
           isOnline={isOnline}
           isChatOnline={isChatOnline}
+          chatId={chatid}
         />
       )}
-
       <form
         className="chat-message-div"
         onSubmit={(e) => messageSubmitHandler(e)}
@@ -511,8 +564,47 @@ const Chat = ({ chatid, allChats, navbarref }) => {
           />
         </button>
       </form>
+      <ChatFilesMenu pollWindow={pollWindow} chat={chat} chatid={chatid} />
+      {/* <div>
+        <div className="pollSendOuterDiv">
 
-      <ChatFilesMenu chat={chat} chatid={chatid} />
+        </div>
+        <div className="pollQuestionOuterDiv">
+          <input type="text" className="pollQuestion" />
+        </div>
+        <select className="pollOptionOuterDiv">
+         <option value=""></option>
+         <option value=""></option>
+        </select>
+      </div>
+      <input type="checkbox" /> */}
+      <form
+        onSubmit={(e) => handleFormSubmit(e)}
+        onChange={(e) => handleFormChange(e)}
+        className="PollWindowDiv"
+        ref={pollWindow}
+      >
+        <div className="PollControls">
+          <ArrowBackIosNew
+            style={{ color: "#dfe3e8", fontWeight: "700px" }}
+            onClick={() => {
+              pollWindow.current.classList.remove("active");
+            }}
+          />
+          <button type="submit">Send</button>
+        </div>
+        <div className="pollBody">
+          <div className="pollQuestion">
+            <p>Question</p>
+            <textarea name="question" id=""></textarea>
+          </div>
+          <div className="pollQuestion">
+            <p>Options</p>
+            <textarea name="option1" id=""></textarea>
+            <textarea name="option2" id=""></textarea>
+          </div>
+        </div>
+      </form>
     </section>
   );
 };

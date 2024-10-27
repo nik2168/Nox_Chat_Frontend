@@ -6,16 +6,19 @@ import RenderAttachment from "./RenderAttachment";
 import { Box } from "@mui/material";
 import { motion } from "framer-motion";
 import { Done, DoneAll } from "@mui/icons-material";
+import Poll from "./Poll";
 
 const Messages = ({
   chat,
-  allMessages,
+  // allMessages,
   user,
   scrollElement,
   messages,
   groupChat,
+  chatId,
 }) => {
   const { newGroupAlert } = useSelector((state) => state.chat);
+  const { allMessages } = useSelector((state) => state.chat);
 
   const autoScrollDiv = useRef();
 
@@ -29,12 +32,10 @@ const Messages = ({
   //   }
   // }
 
-
   useEffect(() => {
     if (autoScrollDiv.current)
       autoScrollDiv.current.scrollIntoView({ behaviour: "smooth" });
-  }, [allMessages]);
-
+  }, []);
 
   return (
     <ul
@@ -52,72 +53,91 @@ const Messages = ({
           _id,
           content,
           isAlert,
+          isPoll,
+          options,
           attachments,
           sender,
+          tempId,
           createdAt,
         } = i;
 
-
-        const timeAgo = moment(createdAt).fromNow();
-        const samesender = user?._id.toString() === sender?._id.toString();
+        const timeAgo = moment(i?.createdAt).fromNow();
+        const samesender = user?._id?.toString() === sender?._id?.toString();
 
         // const isOnline = !samesender && onlineMembers.includes(sender._id.toString());
         // const isInChatOnline = !samesender && onlineChatMembers.includes(sender._id.toString());
         // console.log(isOnline, isInChatOnline);
 
         {
-          return !samesender ? (
-            isAlert ? (
-              <div key={_id} className="chatmessagesalert">
-                <div className="messagealertinnerdiv">
-                  <p>{content}</p>
-                </div>
-              </div>
-            ) : (
+          // return <Poll question={content} options={options} />;
+
+          if (isAlert) {
+            return (
               <>
-                {content && (
-                  <li key={_id} className="textsinboxOuterDiv">
-                    <div className="textsinboxdiv">
-                      {groupChat && <p className="textsender">{sender.name}</p>}
-
-                      <p className="textsinboxp">{content}</p>
-                      <p className="textsinboxtimeStamps">{timeAgo}</p>
-                    </div>
-                  </li>
-                )}
-
-                {attachments?.length > 0 &&
-                  attachments?.map((i, idx) => {
-                    const url = i.url;
-                    const file = fileFormat(url);
-
-                    return (
-                      <li key={_id} className="inboxAttachmentsOuterdiv">
-                        <div className="inboxAttachments">
-                          {groupChat && (
-                            <p className="textsender">{sender.name}</p>
-                          )}
-                          <Box>
-                            <a href={url} target="_blank" download>
-                              {RenderAttachment(file, url)}
-                            </a>
-                            {file === "file" && (
-                              <p className="textsinboxp">Attachment</p>
-                            )}
-                          </Box>
-                          <p className="textsinboxtimeStamps">{timeAgo}</p>
-                        </div>
-                      </li>
-                    );
-                  })}
+                <div key={_id} className="chatmessagesalert">
+                  <div className="messagealertinnerdiv">
+                    <p>{content}</p>
+                  </div>
+                </div>
+                <div ref={autoScrollDiv}></div>
               </>
-            )
-          ) : isAlert ? (
-            <div key={_id} className="chatmessagesalert">
-              <div className="messagealertinnerdiv">
-                <p>{content}</p>
-              </div>
-            </div>
+            );
+          }
+
+        else if (isPoll) {
+            return (
+              <>
+                <Poll
+                  chatId={chatId}
+                  user={user}
+                  samesender={samesender}
+                  question={content}
+                  options={options}
+                  tempId={tempId}
+                />
+                <div ref={autoScrollDiv}></div>
+              </>
+            );
+          }
+
+          return !samesender ? (
+            <>
+              {content && (
+                <li key={_id} className="textsinboxOuterDiv">
+                  <div className="textsinboxdiv">
+                    {groupChat && <p className="textsender">{sender.name}</p>}
+
+                    <p className="textsinboxp">{content}</p>
+                    <p className="textsinboxtimeStamps">{timeAgo}</p>
+                  </div>
+                </li>
+              )}
+
+              {attachments?.length > 0 &&
+                attachments?.map((i, idx) => {
+                  const url = i.url;
+                  const file = fileFormat(url);
+
+                  return (
+                    <li key={_id} className="inboxAttachmentsOuterdiv">
+                      <div className="inboxAttachments">
+                        {groupChat && (
+                          <p className="textsender">{sender.name}</p>
+                        )}
+                        <Box>
+                          <a href={url} target="_blank" download>
+                            {RenderAttachment(file, url)}
+                          </a>
+                          {file === "file" && (
+                            <p className="textsinboxp">Attachment</p>
+                          )}
+                        </Box>
+                        <p className="textsinboxtimeStamps">{timeAgo}</p>
+                      </div>
+                    </li>
+                  );
+                })}
+            </>
           ) : (
             <>
               {content && (
