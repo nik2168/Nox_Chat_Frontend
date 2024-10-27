@@ -821,7 +821,7 @@
 }
 
 .optionsDiv {
-  width: 16rem;
+  width: 18rem;
   height: fit-content;
   padding: 0.3rem;
 }
@@ -849,6 +849,14 @@
   outline: none;
 }
 
+.totalVotes{
+  width: 100%;
+  height: 1rem;
+  font-size: x-small;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
 .option {
   display: flex;
   flex-direction: row;
@@ -859,6 +867,7 @@
   width: 13rem;
   height: 1rem;
   background-color: #dfe3e8;
+  position: relative;
   border-radius: 1rem;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2); /* Shadow effect */
 }
@@ -868,4 +877,37 @@
   background-color: #0c53b7;
   border-radius: 1rem;
   position: absolute;
+}
+
+.optionPhotosDiv{
+  width: 4rem;
+  height: 1.8rem;
+  position: absolute;
+  right: -4.2rem;
+  top: -0.4rem;
+  display: flex;
+  font-weight: 600;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pollImagesContainer{
+  width: 90%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.pollImage {
+  width: 20x;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: absolute;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.35);
+
 }

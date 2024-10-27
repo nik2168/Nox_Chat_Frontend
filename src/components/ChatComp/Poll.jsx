@@ -24,6 +24,7 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
       tempId,
       optionId: e.target.value,
       userId: user?._id,
+      userData: user,
       chatId,
     });
   };
@@ -50,12 +51,16 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
   });
 
   useEffect(() => {
-    options?.map((i, index) => {
-      if (i?.members.includes(user._id.toString())) {
-        setSelectedOption(i?._id);
+    console.log("called")
+    for(let i = 0; i < options?.length; i++){
+      for(let j = 0; j < options[i]?.members?.length; j++){
+        if(options[i]?.members[j]?._id?.toString() === user._id.toString()){
+          console.log("yess matched")
+                    setSelectedOption(options[i]?._id?.toString());
       }
-    });
-  }, [allMessages, options]);
+    }
+  }
+  }, [allMessages]);
 
   return !samesender ? (
     <div className="textsinboxOuterDiv">
@@ -63,6 +68,7 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
         <h2 className="textsinboxp" style={{ fontWeight: "800" }}>
           {question}
         </h2>
+        <p className="totalVotes">{totalVotes} Votes</p>
         <form className="optionsDiv" onSubmit={handleSubmit}>
           {options?.map((option, index) => {
             const percentage = (option?.members?.length / highestVote) * 100;
@@ -87,6 +93,10 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
                       width: `${pixel}rem`,
                     }}
                   ></div>
+                  <div className="optionPhotosDiv">
+                    <p>{option?.members?.length}</p>
+                    <PollImages option={option} />
+                  </div>
                 </div>
               </div>
             );
@@ -113,6 +123,7 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
         <h2 className="textssentp" style={{ fontWeight: "800" }}>
           {question}
         </h2>
+        <p className="totalVotes">{totalVotes} Votes</p>
         <form className="optionsDiv" onSubmit={handleSubmit}>
           {options?.map((option, index) => {
             const percentage = (option?.members?.length / highestVote) * 100;
@@ -135,6 +146,10 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
                     className="optionBarEmpty"
                     style={{ width: `${pixel}rem` }}
                   ></div>
+                  <div className="optionPhotosDiv">
+                    <p>{option?.members?.length}</p>
+                    <PollImages option={option} />
+                  </div>
                 </div>
               </div>
             );
@@ -167,3 +182,24 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
 // };
 
 export default Poll;
+
+
+const PollImages = ({option}) => {
+
+   let len = 3;
+  return (
+    <div className="pollImagesContainer">
+      {option?.members?.map((member, idx) => {
+        if(idx != 0) len += 8;
+        return (
+          <img
+            src={member?.avatar?.url}
+            alt={member?.name}
+            className="pollImage"
+            style={{ height: "23px", width: "23px", left: `${len}px` }}
+          />
+        );
+      })}
+    </div>
+  );
+}

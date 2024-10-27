@@ -80,12 +80,5 @@
 // a= a.filter((i) => i != 2)
 // console.log(a)
 
-const a = [1,2,3];
-const b = a.map((i) => {
-    if(i === 2){
-        i = 4;
-    }
-    return i
-})
-
-console.log(b)
+const a = [{_id: 3, name: "Harish"},  {_id: 1, name: "Rahul"}, 3]
+console.log(a.includes())
