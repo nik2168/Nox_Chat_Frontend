@@ -73,20 +73,16 @@ const Messages = ({
 
           if (isAlert) {
             return (
-              <>
                 <div key={_id} className="chatmessagesalert">
                   <div className="messagealertinnerdiv">
                     <p>{content}</p>
                   </div>
                 </div>
-                <div ref={autoScrollDiv}></div>
-              </>
             );
           }
 
         else if (isPoll) {
             return (
-              <>
                 <Poll
                   chatId={chatId}
                   user={user}
@@ -95,8 +91,6 @@ const Messages = ({
                   options={options}
                   tempId={tempId}
                 />
-                <div ref={autoScrollDiv}></div>
-              </>
             );
           }
 
