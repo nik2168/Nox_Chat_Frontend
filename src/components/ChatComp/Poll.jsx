@@ -22,7 +22,7 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
 
     socket.emit(UPDATE_POLL, {
       tempId,
-      optionId: e.target.value,
+      optionIdx: e.target.value,
       userId: user?._id,
       userData: user,
       chatId,
@@ -51,12 +51,10 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
   });
 
   useEffect(() => {
-    console.log("called")
     for(let i = 0; i < options?.length; i++){
       for(let j = 0; j < options[i]?.members?.length; j++){
         if(options[i]?.members[j]?._id?.toString() === user._id.toString()){
-          console.log("yess matched")
-                    setSelectedOption(options[i]?._id?.toString());
+                    setSelectedOption(i);
       }
     }
   }
@@ -79,8 +77,8 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
                   <input
                     className="textsinboxp"
                     type="checkbox"
-                    value={option?._id}
-                    checked={selectedOption === option?._id}
+                    value={index}
+                    checked={selectedOption === index}
                     onChange={(e) => handleOptionChange(e)}
                     disabled={submitted}
                   />
@@ -134,8 +132,8 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
                 <label className="checkboxDiv">
                   <input
                     type="checkbox"
-                    value={option?._id}
-                    checked={selectedOption === option?._id}
+                    value={index}
+                    checked={selectedOption === index}
                     onChange={(e) => handleOptionChange(e)}
                     disabled={submitted}
                   />

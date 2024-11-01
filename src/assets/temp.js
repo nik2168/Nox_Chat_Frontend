@@ -80,5 +80,7 @@
 // a= a.filter((i) => i != 2)
 // console.log(a)
 
-const a = [{_id: 3, name: "Harish"},  {_id: 1, name: "Rahul"}, 3]
-console.log(a.includes())
+const a = [1,2,3];
+
+a.splice(2,1);
+console.log(a)
