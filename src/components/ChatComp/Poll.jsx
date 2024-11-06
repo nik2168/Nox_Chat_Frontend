@@ -70,7 +70,7 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
         <form className="optionsDiv" onSubmit={handleSubmit}>
           {options?.map((option, index) => {
             const percentage = (option?.members?.length / highestVote) * 100;
-            const pixel = maxWidth * (percentage / 100);
+            const pixel = maxWidth * (percentage / 100) || 0;
             return (
               <div key={index} className="optionDiv">
                 <label className="checkboxDiv" style={{ color: "black" }}>
@@ -125,8 +125,7 @@ const Poll = ({ tempId, user, question, options, samesender, chatId }) => {
         <form className="optionsDiv" onSubmit={handleSubmit}>
           {options?.map((option, index) => {
             const percentage = (option?.members?.length / highestVote) * 100;
-            const pixel = maxWidth * (percentage / 100);
-
+            const pixel = maxWidth * (percentage / 100) || 0;
             return (
               <div key={index} className="optionDiv">
                 <label className="checkboxDiv">
