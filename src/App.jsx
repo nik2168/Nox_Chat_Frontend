@@ -9,26 +9,26 @@ import { server } from "./constants/config.js";
 import { Toaster } from "react-hot-toast";
 import { SocketProvider } from "./socket.jsx";
 
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Chat from "./pages/Chat";
-import NotFound from "./pages/NotFound";
-import AdminLogin from "./pages/Admin/AdminLogin";
-import Dashboard from "./pages/Admin/Dashboard";
-import UsersManagement from "./pages/Admin/UserManagement";
-import ChatsManagement from "./pages/Admin/ChatManagement";
-import Messages from "./pages/Admin/MessageManagement";
+// import Home from "./pages/Home";
+// import Login from "./pages/Login";
+// import Chat from "./pages/Chat";
+// import NotFound from "./pages/NotFound";
+// import AdminLogin from "./pages/Admin/AdminLogin";
+// import Dashboard from "./pages/Admin/Dashboard";
+// import UsersManagement from "./pages/Admin/UserManagement";
+// import ChatsManagement from "./pages/Admin/ChatManagement";
+// import Messages from "./pages/Admin/MessageManagement";
 
-// const Home = lazy(() => import("./pages/Home"));
-// const Login = lazy(() => import("./pages/Login"));
-// const Chat = lazy(() => import("./pages/Chat"));
-// // const Groups = lazy(() => import("./pages/Groups"));
-// const NotFound = lazy(() => import("./pages/NotFound"));
-// const AdminLogin = lazy(() => import("./pages/Admin/AdminLogin"));
-// const Dashboard = lazy(() => import("./pages/Admin/Dashboard"));
-// const UsersManagement = lazy(() => import("./pages/Admin/UserManagement"));
-// const ChatsManagement = lazy(() => import("./pages/Admin/ChatManagement"));
-// const Messages = lazy(() => import("./pages/Admin/MessageManagement"));
+const Home = lazy(() => import("./pages/Home"));
+const Login = lazy(() => import("./pages/Login"));
+const Chat = lazy(() => import("./pages/Chat"));
+// const Groups = lazy(() => import("./pages/Groups"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const AdminLogin = lazy(() => import("./pages/Admin/AdminLogin"));
+const Dashboard = lazy(() => import("./pages/Admin/Dashboard"));
+const UsersManagement = lazy(() => import("./pages/Admin/UserManagement"));
+const ChatsManagement = lazy(() => import("./pages/Admin/ChatManagement"));
+const Messages = lazy(() => import("./pages/Admin/MessageManagement"));
 
 const App = () => {
   const { user, loader } = useSelector((state) => state.auth);

@@ -13,7 +13,7 @@ const fileFormat = (url='') => {
     return 'file'
 }
 
-const transformImage = (url='', width='300') => {
+const transformImage = (url='', width='600') => {
  
     const newUrl = url.replace("upload/", `upload/dpr_auto/w_${width}/`)
 
