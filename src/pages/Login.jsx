@@ -14,9 +14,8 @@ import { userExists, userNotExists } from "../redux/reducer/authslice"; // alt +
 import toast from "react-hot-toast";
 
 const Login = () => {
-  
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const contain = useRef(); // for container's singnin & singup animation
   const currentImage = useRef();
@@ -28,41 +27,13 @@ const Login = () => {
   const [file, setFile] = useState("");
   const [image, setImage] = useState("");
 
-
-
   // SIGN UP
   const signUpSubmitHandler = async (e) => {
     e.preventDefault();
 
-
-    if (!nameFlag) {
-      setcheck(nameErr);
-      return;
-    }
-    else if (!userFlag) {
-      setcheck(userErr);
-      return;
-    }
-    else if (!bioFlag) {
-      setcheck(bioErr);
-      return;
-    }
-    else if (!passFlag) {
-      setcheck(passErr);
-      return;
-    }
-
-    else if (!file) {
-      setcheck("avatar ???");
-      return;
-    }
-    
-    else setcheck("");
-
-
     const toastId = toast.loading("Signing Up...");
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     const formdata = new FormData();
 
@@ -80,27 +51,28 @@ const Login = () => {
     };
 
     try {
-  const {data} = await axios.post(
+      const { data } = await axios.post(
         `${server}/api/v1/user/signup`,
         formdata,
         config
       );
       dispatch(userExists(data?.user));
-      toast.success(data?.message, {id:toastId});
+      toast.success(data?.message, { id: toastId });
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Something went wrong", {id: toastId});
+      toast.error(err?.response?.data?.message || "Something went wrong", {
+        id: toastId,
+      });
     } finally {
-          setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   // LOGIN
   const signInSubmitHandler = async (e) => {
-
     e.preventDefault();
-        const toastId = toast.loading("Signing In...");
+    const toastId = toast.loading("Signing In...");
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     const config = {
       withCredentials: true,
@@ -116,16 +88,17 @@ const Login = () => {
         config
       );
       dispatch(userExists(data?.user));
-      toast.success(data?.message, {id: toastId});
+      toast.success(data?.message, { id: toastId });
     } catch (err) {
       console.log(err);
-      toast.error(err?.response?.data?.message || "something went wrong !", {id: toastId});
-    }finally{
-      setIsLoading(false)
+      toast.error(err?.response?.data?.message || "something went wrong !", {
+        id: toastId,
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  
   // IMG
   const handleImageChange = (e) => {
     if (e.target.files[0].size > 3000000) {
@@ -227,15 +200,9 @@ const Login = () => {
             value={pass}
             onChange={(e) => setpass(e.currentTarget.value)}
           />
-          {check && (
-            <span
-              className="validationWarning"
-              style={{ color: "red", fontWeight: "800" }}
-            >
-              {check}
-            </span>
-          )}
-          <button disabled={isLoading} type="submit">Sign Up</button>
+          <button disabled={isLoading} type="submit">
+            Sign Up
+          </button>
         </form>
       </div>
 
