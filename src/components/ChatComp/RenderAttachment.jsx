@@ -1,5 +1,4 @@
 import React from "react";
-import ReactPlayer from "react-player/lazy";
 import { fileFormat, transformImage } from "../../lib/features";
 import { FileOpen } from "@mui/icons-material";
 

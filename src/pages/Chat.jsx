@@ -133,11 +133,7 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   let isChatOnline = false;
   if (!curChat?.groupChat) {
     isOnline = onlineMembers.includes(otherMember?._id.toString());
-    if (
-      chatOnlineUsersMap?.has(otherMember?._id?.toString()) &&
-      chatOnlineUsersMap?.get(otherMember?._id?.toString()).toString() ===
-        chatid.toString()
-    ) {
+    if (onlineChatMembers.includes(otherMember?._id.toString())) {
       isChatOnline = true;
     }
   }
