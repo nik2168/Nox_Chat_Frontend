@@ -3,7 +3,18 @@ import { server } from "../../constants/config";
 
 const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: `${server}/api/v1` }),
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: `${server}/api/v1`,
+    prepareHeaders: (headers) => {
+      // Get token from localStorage
+      const token = localStorage.getItem("chatapp-token");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+    credentials: "include", // Still include for backward compatibility
+  }),
   tagTypes: ["Chat", "User", "Message", "Groups", "ChatProfile"],
 
   endpoints: (builder) => ({

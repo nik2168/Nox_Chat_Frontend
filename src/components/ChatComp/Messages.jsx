@@ -5,8 +5,13 @@ import { fileFormat } from "../../lib/features";
 import RenderAttachment from "./RenderAttachment";
 import { Box } from "@mui/material";
 import { motion } from "framer-motion";
-import { Done, DoneAll } from "@mui/icons-material";
 import Poll from "./Poll";
+
+// Format read timestamp in iMessage style
+const formatReadTime = (timestamp) => {
+  if (!timestamp) return "";
+  return moment(timestamp).format("h:mm A");
+};
 
 const Messages = ({
   chat,
@@ -48,7 +53,7 @@ const Messages = ({
     >
       {newGroupAlert?.isNewAlert && <p>{newGroupAlert.message}</p>}
 
-      {allMessages?.map((i) => {
+      {allMessages?.map((i, index) => {
         const {
           _id,
           content,
@@ -59,10 +64,34 @@ const Messages = ({
           sender,
           tempId,
           createdAt,
+          status,
+          readAt,
         } = i;
 
         const timeAgo = moment(i?.createdAt).fromNow();
         const samesender = user?._id?.toString() === sender?._id?.toString();
+
+        // Find the last message sent by current user
+        const myMessages = allMessages.filter(
+          (msg) => msg.sender?._id?.toString() === user?._id?.toString()
+        );
+        const lastMyMessage = myMessages[myMessages.length - 1];
+        const isLastMessage = _id === lastMyMessage?._id && _id != null;
+
+        // Determine message status text (iMessage style) - only show on last message
+        const getStatusText = () => {
+          if (!samesender || !isLastMessage) return null;
+          
+          if (status === "seen") {
+            const readTime = readAt ? formatReadTime(readAt) : "";
+            return `Read ${readTime}`;
+          } else if (status === "online") {
+            return "Delivered";
+          }
+          return null; // "send" status doesn't show anything (like iMessage)
+        };
+
+        const statusText = getStatusText();
 
         // const isOnline = !samesender && onlineMembers.includes(sender._id.toString());
         // const isInChatOnline = !samesender && onlineChatMembers.includes(sender._id.toString());
@@ -140,39 +169,21 @@ const Messages = ({
                     <p className="textssentp">{content}</p>
                     <div className="inboxtimetickdiv">
                       <p className="textssenttimeStamps">{timeAgo}</p>
-                      {/* {(lastSeenTime < createdAt &&
-                        lastChatSeenTime < createdAt &&
-                        !isOnline &&
-                        !isChatOnline && (
-                          <Done
-                            sx={{
-                              height: "1rem",
-                              width: "1rem",
-                              color: "whitesmoke",
-                            }}
-                          />
-                        )) ||
-                        (lastSeenTime >= createdAt &&
-                          lastChatSeenTime < createdAt) ||
-                        (isOnline && !isChatOnline && (
-                          <DoneAll
-                            sx={{
-                              height: "1rem",
-                              width: "1rem",
-                              color: "whitesmoke",
-                            }}
-                          />
-                        )) ||
-                        ((lastChatSeenTime >= createdAt || isChatOnline) && (
-                          <DoneAll
-                            sx={{
-                              height: "1rem",
-                              width: "1rem",
-                              color: "yellow",
-                            }}
-                          />
-                        ))} */}
                     </div>
+                    {/* iMessage-style Read Receipt */}
+                    {statusText && (
+                      <p 
+                        style={{ 
+                          fontSize: "0.7rem", 
+                          color: status === "seen" ? "#007AFF" : "#9ca3af", 
+                          marginTop: "0.25rem",
+                          textAlign: "right",
+                          fontWeight: status === "seen" ? "500" : "400"
+                        }}
+                      >
+                        {statusText}
+                      </p>
+                    )}
                   </div>
                 </li>
               )}
@@ -190,6 +201,20 @@ const Messages = ({
                           </a>
                         </Box>
                         <p className="textssenttimeStamps">{timeAgo}</p>
+                        {/* iMessage-style Read Receipt for attachments */}
+                        {statusText && (
+                          <p 
+                            style={{ 
+                              fontSize: "0.7rem", 
+                              color: status === "seen" ? "#007AFF" : "#9ca3af", 
+                              marginTop: "0.25rem",
+                              textAlign: "right",
+                              fontWeight: status === "seen" ? "500" : "400"
+                            }}
+                          >
+                            {statusText}
+                          </p>
+                        )}
                       </div>
                     </li>
                   );

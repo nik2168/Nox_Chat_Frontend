@@ -84,13 +84,21 @@ const Navbar = ({ setnav, curnav, navbarref }) => {
     handleNav(e);
     setnav("settings");
     try {
+      // Get token from localStorage
+      const token = localStorage.getItem("chatapp-token");
+      
       const { data } = await axios.get(`${server}/api/v1/user/logout`, {
         withCredentials: true,
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       toast.success(data?.message);
+      // Clear token from localStorage
+      localStorage.removeItem("chatapp-token");
       dispatch(userNotExists());
     } catch (err) {
       toast.error(err?.response?.data?.message || "something went wrong !");
+      // Clear token even on error
+      localStorage.removeItem("chatapp-token");
     }
   };
 

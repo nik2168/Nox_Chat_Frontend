@@ -9,12 +9,14 @@ import React from "react";
 import toast from "react-hot-toast";
 import { useSendAttachmentsMutation } from "../../redux/api/api";
 
-const ChatFilesMenu = ({ chat, chatid, pollWindow }) => {
+const ChatFilesMenu = ({ chat, chatid, onPollClick }) => {
   const [sendAttachments] = useSendAttachmentsMutation();
 
   const fileChangeHandler = async (e, key) => {
     if (key.toString() === "Poll") {
-      console.log("open poll window !");
+      if (onPollClick) {
+        onPollClick();
+      }
       return;
     }
 
@@ -25,7 +27,9 @@ const ChatFilesMenu = ({ chat, chatid, pollWindow }) => {
       return toast.error(`You can only send 5 ${key} at a time`);
 
     const toastId = toast.loading(`Sending ${key}...`);
-    chat.current.classList.remove("active-files");
+    if (chat?.current) {
+      chat.current.classList.remove("active-files");
+    }
 
     try {
       const formdata = new FormData();
@@ -47,102 +51,79 @@ const ChatFilesMenu = ({ chat, chatid, pollWindow }) => {
 
   return (
     <>
-      <article className="chat-files"></article>
-      <div className="chat-file poll" onClick={() => {
-        if(!pollWindow.current.classList.contains("active")){
-                        pollWindow.current.classList.add("active");
-                        return;
+      <article className="chat-files fixed bottom-20 left-1/2 transform -translate-x-1/2 
+                          bg-gray-800 dark:bg-gray-900 rounded-2xl p-4 shadow-2xl 
+                          flex gap-4 z-50 hidden">
+        <div className="chat-file poll flex flex-col items-center gap-2 cursor-pointer 
+                        hover:bg-gray-700 rounded-lg p-3 transition-colors" 
+             onClick={() => {
+               if (onPollClick) {
+                 onPollClick();
+               }
+               if (chat?.current) {
+                 chat.current.classList.remove("active-files");
+               }
+             }}>
+          <PollRounded className="text-white text-3xl" />
+          <span className="text-white text-sm">Poll</span>
+        </div>
 
-        }
-        pollWindow.current.classList.remove("active");
+        <label className="chat-file photos flex flex-col items-center gap-2 cursor-pointer 
+                        hover:bg-gray-700 rounded-lg p-3 transition-colors">
+          <PhotoIcon className="text-white text-3xl" />
+          <span className="text-white text-sm">Photos</span>
+          <input
+            type="file"
+            id="photos"
+            multiple
+            accept="image/png, image/jpeg, image/gif"
+            onChange={(e) => fileChangeHandler(e, "Images")}
+            className="hidden"
+          />
+        </label>
 
-        }}>
-        <PollRounded
-          sx={{
-            color: "#f9fafb",
-            fontSize: "2.3rem",
-          }}
-        />
-        <span>Poll</span>
-        {/* <input
-          type="none"
-          id="image"
-          onChange={(e) => fileChangeHandler(e, "Poll")}
-          className="chatFileInput"
-        /> */}
-      </div>
+        <label className="chat-file videos flex flex-col items-center gap-2 cursor-pointer 
+                        hover:bg-gray-700 rounded-lg p-3 transition-colors">
+          <VideoIcon className="text-white text-3xl" />
+          <span className="text-white text-sm">Videos</span>
+          <input
+            type="file"
+            id="videos"
+            multiple
+            accept="video/mp4, video/webm, video/ogg"
+            onChange={(e) => fileChangeHandler(e, "Videos")}
+            className="hidden"
+          />
+        </label>
 
-      <div className="chat-file photos">
-        <PhotoIcon
-          sx={{
-            color: "#f9fafb",
-            fontSize: "2.3rem",
-          }}
-        />
-        <span>Photos</span>
-        <input
-          type="file"
-          id="image"
-          multiple
-          accept="image/png, image/jpeg, image/gif"
-          onChange={(e) => fileChangeHandler(e, "Images")}
-          className="chatFileInput"
-        />
-      </div>
+        <label className="chat-file documents flex flex-col items-center gap-2 cursor-pointer 
+                        hover:bg-gray-700 rounded-lg p-3 transition-colors">
+          <DocumentIcon className="text-white text-3xl" />
+          <span className="text-white text-sm">File</span>
+          <input
+            type="file"
+            id="documents"
+            multiple
+            accept="*"
+            onChange={(e) => fileChangeHandler(e, "Files")}
+            className="hidden"
+          />
+        </label>
 
-      <div className="chat-file videos">
-        <VideoIcon
-          sx={{
-            color: "#f9fafb",
-            fontSize: "2.3rem",
-          }}
-        />
-        <span>Videos</span>
-        <input
-          type="file"
-          id="image"
-          multiple
-          accept="video/mp4, video/webm, video/ogg"
-          onChange={(e) => fileChangeHandler(e, "Videos")}
-          className="chatFileInput"
-        />
-      </div>
-
-      <div className="chat-file documents">
-        <DocumentIcon
-          sx={{
-            color: "#f9fafb",
-            fontSize: "2.3rem",
-          }}
-        />
-        <span>File</span>
-        <input
-          type="file"
-          id="image"
-          multiple
-          accept="*"
-          onChange={(e) => fileChangeHandler(e, "Files")}
-          className="chatFileInput"
-        />
-      </div>
-
-      <div className="chat-file audio">
-        <AudioFile
-          sx={{
-            color: "#f9fafb",
-            fontSize: "2.3rem",
-          }}
-        />
-        <span>Audio</span>
-        <input
-          type="file"
-          id="image"
-          multiple
-          accept="audio/mpeg, audio/wav"
-          onChange={(e) => fileChangeHandler(e, "Audios")}
-          className="chatFileInput"
-        />
-      </div>
+        <label className="chat-file audio flex flex-col items-center gap-2 cursor-pointer 
+                        hover:bg-gray-700 rounded-lg p-3 transition-colors">
+          <AudioFile className="text-white text-3xl" />
+          <span className="text-white text-sm">Audio</span>
+          <input
+            type="file"
+            id="audio"
+            multiple
+            accept="audio/mpeg, audio/wav"
+            onChange={(e) => fileChangeHandler(e, "Audios")}
+            className="hidden"
+          />
+        </label>
+      </article>
     </>
   );
 };

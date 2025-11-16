@@ -56,6 +56,10 @@ const Login = () => {
         formdata,
         config
       );
+      // Store JWT token in localStorage for Safari compatibility
+      if (data?.token) {
+        localStorage.setItem("chatapp-token", data.token);
+      }
       dispatch(userExists(data?.user));
       toast.success(data?.message, { id: toastId });
     } catch (err) {
@@ -87,6 +91,10 @@ const Login = () => {
         { username: user, password: pass },
         config
       );
+      // Store JWT token in localStorage for Safari compatibility
+      if (data?.token) {
+        localStorage.setItem("chatapp-token", data.token);
+      }
       dispatch(userExists(data?.user));
       toast.success(data?.message, { id: toastId });
     } catch (err) {

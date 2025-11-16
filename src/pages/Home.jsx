@@ -1,21 +1,29 @@
 import React from "react";
-import AppLayout from "../components/AppLayout/AppLayout";
+import iMessageLayout from "../components/layouts/iMessageLayout";
+import Sidebar from "../components/sidebar/Sidebar";
+import EmptyState from "../components/chat/EmptyState";
+import GlobalSocketListeners from "../components/common/GlobalSocketListeners";
 
-
-const Home = ({userdata}) => {
-
-
+/**
+ * Home Page - Chat List View (iMessage style)
+ */
+const Home = () => {
   return (
-      <section className="chatdefault" >
-      <div className="person-dp">
-        <img src="NoxChatLogo.png" alt="" className="person-image" />
+    <>
+      <GlobalSocketListeners />
+      <div className="h-screen w-screen flex overflow-hidden bg-gray-50 dark:bg-gray-900">
+        {/* Sidebar - Chat List */}
+        <div className="w-full lg:w-80 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 flex-shrink-0 overflow-hidden">
+          <Sidebar />
+        </div>
+
+        {/* Empty State */}
+        <div className="hidden lg:flex flex-1">
+          <EmptyState />
+        </div>
       </div>
-      <h1>Welcome To Project NOX</h1>
-      <p>
-        Your personal messages are not <strong>end-to-end encrypted</strong>
-      </p>
-    </section>
+    </>
   );
 };
 
-export default AppLayout()(Home);
+export default Home;

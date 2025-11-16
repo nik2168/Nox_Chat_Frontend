@@ -4,7 +4,6 @@ import {
   ArrowBackIosNew,
   MoreVert,
   Send,
-  Timer,
 } from "@mui/icons-material";
 import { Skeleton } from "@mui/material";
 import moment from "moment";
@@ -33,6 +32,8 @@ import {
   START_TYPING,
   STOP_TYPING,
   UPDATE_POLL,
+  MESSAGES_READ,
+  MESSAGES_DELIVERED,
 } from "../constants/events.js";
 import { useErrors, useSocketEvents } from "../hooks/hook.jsx";
 import {
@@ -46,6 +47,7 @@ import {
   setNewGroupAlert,
   setTyping,
   updateAMessage,
+  updateMessageStatus,
 } from "../redux/reducer/chat.js";
 import { getSocket } from "../socket";
 import toast from "react-hot-toast";
@@ -76,7 +78,6 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   const [page, setPage] = useState(1);
   const [imTyping, setImTyping] = useState(false);
   const [onlineLastSeen, setOnlineLastSeen] = useState("");
-  const [scheduleTime, setScheduleTime] = useState("");
 
   const navigate = useNavigate();
 
@@ -87,8 +88,6 @@ const Chat = ({ chatid, allChats, navbarref }) => {
   const chatsetting = useRef();
 
   const pollWindow = useRef();
-
-  const scheduleMessage = useRef();
 
   const clearTime = useRef();
 
@@ -158,6 +157,7 @@ const Chat = ({ chatid, allChats, navbarref }) => {
 
     dispatch(removeNewMessagesAlert(chatid));
 
+
     return () => {
       setOldMessages([]);
       setPage(1);
@@ -196,28 +196,6 @@ const Chat = ({ chatid, allChats, navbarref }) => {
     setcurmessage("");
   };
 
-  const scheduleMessageHandler = (e) => {
-    e.preventDefault();
-    if (!message.trim()) return;
-
-    let membersId = [];
-
-    members.map((i) => membersId.push(i._id));
-
-    // emitting message to the server ...
-    socket.emit(SCHEDULE_MESSAGE, {
-      chatid,
-      members: membersId,
-      message,
-      otherMember,
-      scheduleTime,
-    });
-
-    setcurmessage("");
-    setScheduleTime("");
-
-    scheduleMessage.current.classList.remove("active");
-  };
 
   const onChangeHandler = (e) => {
     setcurmessage(e.target.value);
@@ -250,7 +228,7 @@ const Chat = ({ chatid, allChats, navbarref }) => {
     }
 
     setMessages((pre) => [...pre, message]);
-  }, []);
+  }, [chatid]);
 
   // update message status for other users
   const lastOnlineListner = useCallback((data) => {
@@ -497,51 +475,6 @@ const Chat = ({ chatid, allChats, navbarref }) => {
             onChange={(e) => onChangeHandler(e)}
           />
 
-          <div className="scheduleMessage" ref={scheduleMessage}>
-            <div className="scheduleCross">
-              <p>Schedule a message</p>
-            </div>
-            <div className="scheduleInputDiv">
-              <input
-                type="number"
-                className="scheduleInput"
-                value={scheduleTime}
-                onChange={(e) => setScheduleTime(e.currentTarget.value)}
-              />
-              <p className="scheduleText">MIN</p>
-            </div>
-            <div className="sendButtonDiv">
-              <button
-                className="scheduleCancel"
-                onClick={() => {
-                  scheduleMessage.current.classList.remove("active");
-                  setScheduleTime("");
-                }}
-              >
-                CANCEL
-              </button>
-              <button
-                className="scheduleSend"
-                onClick={(e) => scheduleMessageHandler(e)}
-              >
-                SCHEDULE
-              </button>
-            </div>
-          </div>
-
-          <div
-            className="scheduleIconDiv"
-            onClick={() => {
-              if (scheduleMessage.current.classList.contains("active")) {
-                scheduleMessage.current.classList.remove("active");
-                setScheduleTime("");
-                return;
-              }
-              scheduleMessage.current.classList.add("active");
-            }}
-          >
-            <Timer className="scheduleIcon" />
-          </div>
         </div>
 
         <button

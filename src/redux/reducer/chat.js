@@ -54,6 +54,7 @@ const chatSlice = createSlice({
        })
     },
 
+
     setNewMessagesAlert: (state, action) => {
       const index = state.newMessageAlert.findIndex(
         (i) => i.chatid === action.payload.chatid

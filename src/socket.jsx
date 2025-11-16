@@ -7,8 +7,18 @@ const SocketContext = createContext();
 const getSocket = () => useContext(SocketContext);
 
 const SocketProvider = ({ children }) => {
-    
-  const socket = useMemo(() => io.connect(server, { withCredentials: true}), []);
+  // Get token from localStorage for Safari compatibility
+  const token = localStorage.getItem("chatapp-token");
+  
+  const socket = useMemo(() => 
+    io.connect(server, { 
+      withCredentials: true,
+      auth: {
+        token: token, // Send token in auth for Safari
+      },
+    }), 
+  [token]);
+  
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );

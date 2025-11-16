@@ -8,6 +8,7 @@ import { userExists, userNotExists } from "./redux/reducer/authslice";
 import { server } from "./constants/config.js";
 import { Toaster } from "react-hot-toast";
 import { SocketProvider } from "./socket.jsx";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 // import Home from "./pages/Home";
 // import Login from "./pages/Login";
@@ -20,8 +21,10 @@ import { SocketProvider } from "./socket.jsx";
 // import Messages from "./pages/Admin/MessageManagement";
 
 const Home = lazy(() => import("./pages/Home"));
-const Login = lazy(() => import("./pages/Login"));
+const Login = lazy(() => import("./pages/LoginNew"));
 const Chat = lazy(() => import("./pages/Chat"));
+const ChatNew = lazy(() => import("./pages/ChatNew"));
+const Settings = lazy(() => import("./pages/Settings"));
 // const Groups = lazy(() => import("./pages/Groups"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const AdminLogin = lazy(() => import("./pages/Admin/AdminLogin"));
@@ -36,54 +39,67 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // Get token from localStorage
+    const token = localStorage.getItem("chatapp-token");
+    
+    const config = {
+      withCredentials: true,
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    };
+
     axios
-      .get(`${server}/api/v1/user/profile`, { withCredentials: true })
+      .get(`${server}/api/v1/user/profile`, config)
       .then(({ data }) => {
         dispatch(userExists(data?.user));
       })
       .catch((err) => {
         console.log(err);
         dispatch(userNotExists());
+        // Clear invalid token
+        localStorage.removeItem("chatapp-token");
       });
   }, [dispatch]);
 
   return loader ? (
     <Loaders />
   ) : (
-    <BrowserRouter>
-      <Suspense fallback={<Loaders />}>
-        <Routes>
-          <Route
-            element={  // socket client connection 
-              <SocketProvider>
-                <ProtectRoute user={user} />
-              </SocketProvider>
-            }
-          >
-            <Route path="/" element={<Home />} />
-            <Route path="/chat/:chatid" element={<Chat />} />
-            {/* <Route path="/groups" element={<Groups />} /> */}
-          </Route>
-          <Route
-            path="/login"
-            element={
-              <ProtectRoute user={!user} redirect="/">
-                <Login />
-              </ProtectRoute>
-            }
-          />
+    <ThemeProvider>
+      <BrowserRouter>
+        <Suspense fallback={<Loaders />}>
+          <Routes>
+            <Route
+              element={  // socket client connection 
+                <SocketProvider>
+                  <ProtectRoute user={user} />
+                </SocketProvider>
+              }
+            >
+              <Route path="/" element={<Home />} />
+              <Route path="/chat/:chatid" element={<ChatNew />} />
+              <Route path="/profile" element={<Settings />} />
+              {/* <Route path="/groups" element={<Groups />} /> */}
+            </Route>
+            <Route
+              path="/login"
+              element={
+                <ProtectRoute user={!user} redirect="/">
+                  <Login />
+                </ProtectRoute>
+              }
+            />
 
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<Dashboard />} />
-          <Route path="/admin/users" element={<UsersManagement />} />
-          <Route path="/admin/chats" element={<ChatsManagement />} />
-          <Route path="/admin/messages" element={<Messages />} />
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/admin/users" element={<UsersManagement />} />
+            <Route path="/admin/chats" element={<ChatsManagement />} />
+            <Route path="/admin/messages" element={<Messages />} />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-      <Toaster position="top-center" />
-    </BrowserRouter>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+        <Toaster position="top-center" />
+      </BrowserRouter>
+    </ThemeProvider>
   );
 };
 
