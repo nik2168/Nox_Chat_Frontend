@@ -45,7 +45,7 @@ const PollBubble = ({ tempId, user, question, options, isMyMessage, chatId }) =>
     // Sent message - blue bubble
     return (
       <div className="flex flex-col items-end">
-        <div className="max-w-[70%] lg:max-w-[60%]">
+        <div className="w-[70%] lg:w-[50%]">
           <div className="bg-blue-500 text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
             {/* Question */}
             <h3 className="text-[15px] font-semibold mb-1">{question}</h3>
