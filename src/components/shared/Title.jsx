@@ -1,12 +1,27 @@
-import React from 'react'
-import { Helmet } from 'react-helmet-async'
-const Title = ({title = 'NOX Chat', description = 'My First MERN Project'}) => {
-  return (
-    <Helmet>
-        <title>{title}</title>
-        <meta name='description' content={description}/>
-    </Helmet>
-  )
-}
+import React, { useEffect } from "react";
 
-export default Title
+const Title = ({
+  title = "NOX Chat",
+  description = "My First MERN Project",
+}) => {
+  useEffect(() => {
+    if (title) {
+      document.title = title;
+    }
+    if (description) {
+      const meta =
+        document.querySelector("meta[name='description']") ||
+        (() => {
+          const m = document.createElement("meta");
+          m.name = "description";
+          document.head.appendChild(m);
+          return m;
+        })();
+      meta.setAttribute("content", description);
+    }
+  }, [title, description]);
+
+  return null;
+};
+
+export default Title;
