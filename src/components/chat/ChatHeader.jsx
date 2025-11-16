@@ -31,7 +31,7 @@ const ChatHeader = ({ chatName, isGroupChat, otherMember, chatId, avatar, onBack
       <div className="flex items-center gap-3 flex-1 min-w-0">
         <button
           onClick={onBack}
-          className="lg:hidden p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+          className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
         >
           <ArrowBack className="text-gray-600 dark:text-gray-400" />
         </button>

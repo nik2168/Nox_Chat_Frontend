@@ -22,7 +22,6 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/LoginNew"));
-const Chat = lazy(() => import("./pages/Chat"));
 const ChatNew = lazy(() => import("./pages/ChatNew"));
 const Settings = lazy(() => import("./pages/Settings"));
 // const Groups = lazy(() => import("./pages/Groups"));
@@ -75,6 +74,7 @@ const App = () => {
               }
             >
               <Route path="/" element={<Home />} />
+              <Route path="/chat" element={<ChatNew />} />
               <Route path="/chat/:chatid" element={<ChatNew />} />
               <Route path="/profile" element={<Settings />} />
               {/* <Route path="/groups" element={<Groups />} /> */}

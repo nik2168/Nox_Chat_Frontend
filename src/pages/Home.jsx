@@ -13,7 +13,7 @@ const Home = () => {
       <GlobalSocketListeners />
       <div className="h-screen w-screen flex overflow-hidden bg-gray-50 dark:bg-gray-900">
         {/* Sidebar - Chat List */}
-        <div className="w-full lg:w-80 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 flex-shrink-0 overflow-hidden">
+        <div className="w-full lg:w-[28rem] border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 flex-shrink-0 overflow-hidden">
           <Sidebar />
         </div>
 

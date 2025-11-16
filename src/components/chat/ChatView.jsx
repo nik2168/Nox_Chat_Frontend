@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useInfiniteScrollTop } from "6pp";
 import { useGetChatDetailsQuery, useGetMessagesQuery } from "../../redux/api/api";
 import { 
@@ -44,8 +44,7 @@ import { Skeleton } from "@mui/material";
  * - Group/Chat settings
  * - Status updates
  */
-const ChatView = ({ chatId }) => {
-  const navigate = useNavigate();
+const ChatView = ({ chatId, onBack }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { 
@@ -63,6 +62,7 @@ const ChatView = ({ chatId }) => {
   const [imTyping, setImTyping] = useState(false);
   
   const messagesEndRef = useRef(null);
+  const shouldAutoScrollRef = useRef(true);
   const scrollElement = useRef(null);
   const chat = useRef(null);
   const clearTime = useRef(null);
@@ -97,8 +97,13 @@ const ChatView = ({ chatId }) => {
     dispatch(setAllMessages([...oldMessages, ...messages]));
   }, [oldMessages, messages, dispatch]);
 
-  // Auto-scroll to bottom
+  // Auto-scroll to bottom (skip when we explicitly disable, e.g. poll updates)
   useEffect(() => {
+    if (!shouldAutoScrollRef.current) {
+      // Reset the flag but skip auto-scroll for this update
+      shouldAutoScrollRef.current = true;
+      return;
+    }
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allMessages]);
 
@@ -131,10 +136,14 @@ const ChatView = ({ chatId }) => {
   }, [chatId, members, socket, user, dispatch]);
 
   // New message listener
-  const newMessageListener = useCallback(({ chatId: receivedChatId, message: newMessage }) => {
-    if (receivedChatId?.toString() !== chatId?.toString()) return;
-    setMessages((prev) => [...prev, newMessage]);
-  }, [chatId]);
+  const newMessageListener = useCallback(
+    ({ chatId: receivedChatId, message: newMessage }) => {
+      if (receivedChatId?.toString() !== chatId?.toString()) return;
+      shouldAutoScrollRef.current = true;
+      setMessages((prev) => [...prev, newMessage]);
+    },
+    [chatId]
+  );
 
   // Typing listeners
   const startTypingListener = useCallback((data) => {
@@ -152,10 +161,15 @@ const ChatView = ({ chatId }) => {
   }, [chatId, user, dispatch]);
 
   // Poll update listener
-  const updatePollListener = useCallback(({ tempId, messageData, chatId: receivedChatId, userId }) => {
-    if (receivedChatId.toString() !== chatId.toString()) return;
-    dispatch(updateAMessage({ tempId, messageData }));
-  }, [chatId, dispatch]);
+  const updatePollListener = useCallback(
+    ({ tempId, messageData, chatId: receivedChatId, userId }) => {
+      if (receivedChatId.toString() !== chatId.toString()) return;
+      // Poll option updates should NOT force scroll to bottom
+      shouldAutoScrollRef.current = false;
+      dispatch(updateAMessage({ tempId, messageData }));
+    },
+    [chatId, dispatch]
+  );
 
   // Chat online users listener
   const chatOnlineUsersListener = useCallback(({ chatOnlineMembers, chatId: receivedChatId }) => {
@@ -218,6 +232,7 @@ const ChatView = ({ chatId }) => {
       if (i._id.toString() !== user._id.toString()) membersId.push(i._id);
     });
 
+    shouldAutoScrollRef.current = true;
     socket.emit(NEW_MESSAGE, {
       chatid: chatId,
       members: membersId,
@@ -238,6 +253,7 @@ const ChatView = ({ chatId }) => {
       if (i._id.toString() !== user._id.toString()) membersId.push(i._id);
     });
 
+    shouldAutoScrollRef.current = true;
     socket.emit(NEW_MESSAGE, {
       chatid: chatId,
       members: membersId,
@@ -285,7 +301,7 @@ const ChatView = ({ chatId }) => {
         otherMember={otherMember}
         chatId={chatId}
         avatar={avatar}
-        onBack={() => navigate("/")}
+        onBack={onBack}
         onSettingsClick={() => setShowChatProfile(true)}
       />
 

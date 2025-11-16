@@ -40,7 +40,7 @@ const Sidebar = () => {
     } else if (themeMode === 'dark') {
       setThemeMode('light');
     } else {
-      setThemeMode('system');
+      setThemeMode('dark');
     }
   };
 
